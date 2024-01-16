@@ -33,7 +33,7 @@ export default function CreateUser(){
     }
 
     return(
-        <div className="d-flex vh-100 vw-100 bg-primary justify-content-center align-items-center">
+        <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
             <div className='w-50 bg-white rounded p-3'>
                 <form onSubmit={Login}>
                     <h2>Login</h2>

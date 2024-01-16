@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const userModel = require('./models/Users.model')
+const shiftModel = require('./models/Attendance.models')
 
 const app= express()
 app.use(cors())
@@ -19,13 +20,46 @@ app.post("/login",(req, res) =>{
                 res.json("success")
             }
             else{
-                res.json("incorrect credential1"+password)
+                res.json("incorrect credential")
             }
         }
         else{
             res.json("incorrect credential")
         }
     })
+    .catch(err=>res.json(err))
+})
+
+app.post("/StartShift",(req,res)=>{
+    const currentDateandTime = new Date();
+    const year = currentDateandTime.getFullYear();
+    const month = currentDateandTime.getMonth() + 1;
+    const day = currentDateandTime.getDate();
+
+    const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+    console.log(formattedDate)
+
+    const hours = currentDateandTime.getHours();
+    const minutes = currentDateandTime.getMinutes();
+    const seconds = currentDateandTime.getSeconds();
+
+    const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    console.log(formattedTime)
+    console.log(req.body.email)
+    shiftModel.create({
+        email:req.body.email,
+        date: formattedDate,
+        startTime: formattedTime,
+        duration: 0
+    })
+    .then(shift=>res.json(shift))
+    .catch(err=>res.json(err))
+})
+
+app.get("/getUser/:email", (req, res) =>{
+    const email = req.params.email;
+    userModel.findOne({email:email})
+    .then(users=>res.json(users))
     .catch(err=>res.json(err))
 })
 
