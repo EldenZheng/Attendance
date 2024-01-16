@@ -37,21 +37,26 @@ app.post("/StartShift",(req,res)=>{
     const day = currentDateandTime.getDate();
 
     const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
-    console.log(formattedDate)
 
     const hours = currentDateandTime.getHours();
     const minutes = currentDateandTime.getMinutes();
     const seconds = currentDateandTime.getSeconds();
 
     const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    console.log(formattedTime)
-    console.log(req.body.email)
+
     shiftModel.create({
         email:req.body.email,
         date: formattedDate,
         startTime: formattedTime,
         duration: 0
     })
+    .then(shift=>res.json(shift))
+    .catch(err=>res.json(err))
+})
+
+app.get("/checkShift/:email",(req,res)=>{
+    const email = req.params.email;
+    shiftModel.findOne({email:email})
     .then(shift=>res.json(shift))
     .catch(err=>res.json(err))
 })
