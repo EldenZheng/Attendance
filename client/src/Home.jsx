@@ -20,7 +20,7 @@ export default function Home(){
         .catch(err=>console.log(err))
     },[])
     useEffect(()=>{
-        axios.get('http://localhost:3001/CheckShift/'+userData.email)
+        axios.get('http://localhost:3001/checkShift/'+userData.email)
         .then(result => {
             if(result.data==true){
                 setShiftStatus(true)
@@ -30,10 +30,11 @@ export default function Home(){
                 const seconds = currentDateandTime.getSeconds();
                 const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
                 setShiftStart(formattedTime)
-            }
-            else{
+            }else if(result.data=="complete"){
                 setShiftStart(false)
                 setShiftComplete(true)
+            }
+            else{
             }
         })
         .catch(err=>console.log(err))

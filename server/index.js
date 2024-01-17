@@ -81,15 +81,19 @@ app.put("/EndShift", (req, res) =>{
 app.get("/checkShift/:email",(req,res)=>{
     const today = new Date().toISOString().split('T')[0];
     const email = req.params.email;
+    console.log(email," ",today)
     shiftModel.findOne({
         email: email,
-        date: today,
-        duration: 0
+        date: today
     })
     .then(shift => {
         if (shift) {
+            if(shift.duration==0){
+                res.json("complete")
+            }
             res.json(true);
-        } else {
+        }else {
+            console.log(shift)
             res.json(false);
         }
     })
