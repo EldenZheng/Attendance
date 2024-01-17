@@ -4,7 +4,8 @@ const AttendanceSchema = new mongoose.Schema({
     email: String,
     date: String,
     startTime: String,
-    duration: Number
+    duration: String,
+    endTime: String
 })
 
 const shiftModel = mongoose.model("Shift",AttendanceSchema)

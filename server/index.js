@@ -48,18 +48,54 @@ app.post("/StartShift",(req,res)=>{
         email:req.body.email,
         date: formattedDate,
         startTime: formattedTime,
-        duration: 0
+        duration: 0,
+        endTime: '00:00:00',
     })
     .then(shift=>res.json(shift))
     .catch(err=>res.json(err))
 })
 
-app.get("/checkShift/:email",(req,res)=>{
-    const email = req.params.email;
-    shiftModel.findOne({email:email})
-    .then(shift=>res.json(shift))
+app.put("/EndShift", (req, res) =>{
+    const currentDateandTime = new Date();
+    const hours = currentDateandTime.getHours();
+    const minutes = currentDateandTime.getMinutes();
+    const seconds = currentDateandTime.getSeconds();
+    const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+    const { email, duration } = req.body;
+
+    shiftModel.findOneAndUpdate({email:email} ,{
+        duration: duration,
+        endTime:formattedTime
+    })
+    .then(shift=>{
+        if (shift) {
+            res.json(true);
+        } else {
+            res.json(false);
+        }
+    })
     .catch(err=>res.json(err))
 })
+
+app.get("/checkShift/:email",(req,res)=>{
+    const today = new Date().toISOString().split('T')[0];
+    const email = req.params.email;
+    shiftModel.findOne({
+        email: email,
+        date: today,
+        duration: 0
+    })
+    .then(shift => {
+        if (shift) {
+            res.json(true);
+        } else {
+            res.json(false);
+        }
+    })
+    .catch(err => res.json(err));
+});
+
 
 app.get("/getUser/:email", (req, res) =>{
     const email = req.params.email;

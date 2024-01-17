@@ -22,30 +22,61 @@ export default function Home(){
     useEffect(()=>{
         axios.get('http://localhost:3001/CheckShift/'+userData.email)
         .then(result => {
-            setShiftStatus(true)
-            setShiftStart(result.data.startTime)
+            if(result.data==true){
+                setShiftStatus(true)
+                const currentDateandTime = new Date();
+                const hours = currentDateandTime.getHours();
+                const minutes = currentDateandTime.getMinutes();
+                const seconds = currentDateandTime.getSeconds();
+                const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                setShiftStart(formattedTime)
+            }
+            else{
+                setShiftStart(false)
+                setShiftComplete(true)
+            }
         })
         .catch(err=>console.log(err))
     },[])
 
     const startShift= () => {
         axios.post('http://localhost:3001/StartShift', info)
-        .then(result=> console.log(result))
+        .then(result=> {console.log(result),
+            window.location.reload();
+        })
         .catch(err=>console.log(err))
     }
+
+    const endShift = () => {
+        const shiftInfo = {
+            email: info.email,
+            duration: formatTime(duration)
+        };
+        axios.put('http://localhost:3001/EndShift', shiftInfo)
+            .then(result => {
+                window.location.reload();
+            })
+            .catch(err => console.log(err));
+    };
+
     useEffect(() => {
-        const interval = setInterval(() => {
-            const currentTime = new Date();
-            const startTime = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), ...shiftStart.split(':'));
-            const elapsedMilliseconds = currentTime - startTime;
-            const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
-        
-            setDuration(elapsedSeconds);
-    }, 1000); // Update every second
+        let interval;
     
-    // Clean up the interval when the component unmounts
-    return () => clearInterval(interval);
-    }, [shiftStart]);
+        if (shiftStatus) {
+            interval = setInterval(() => {
+                const currentTime = new Date();
+                const startTime = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), ...shiftStart.split(':'));
+                const elapsedMilliseconds = currentTime - startTime;
+                const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
+    
+                setDuration(elapsedSeconds);
+            }, 1000);
+        }
+    
+        // Cleanup the interval when the component unmounts or when shiftStatus becomes false
+        return () => clearInterval(interval);
+    
+    }, [shiftStatus, shiftStart]);
 
     const formatTime = (timeInSeconds) => {
         const hours = Math.floor(timeInSeconds / 3600);
@@ -60,24 +91,25 @@ export default function Home(){
             <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
                 <div className='w-50 bg-white rounded p-3'>
                     <h3>Success! Welcome {info.email}</h3>
-                    {!(shiftStatus) &&(
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            Shift Not Started
-                            <button className="btn btn-primary" onClick={startShift}>Start Shift</button>
-                        </div>
+                    {!(shiftStatus) && !(shiftComplete) &&(
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                Shift Not Started
+                                <button className="btn btn-primary" onClick={startShift}>Start Shift</button>
+                            </div>
                         )
                     }
-                    {shiftStatus &&(
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            Elapse Time: {duration}
-                            <button className="btn btn-primary" onClick={startShift}>Start Shift</button>
-                        </div>
+                    {shiftStatus &&  !(shiftComplete) &&(
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                Elapsed Time: {formatTime(duration)}
+                                <button className="btn btn-danger" onClick={endShift}>End Shift</button>
+                            </div>
                         )
                     }
-                    {shiftComplete&&
-                        <div>
-                            Shift Completed
-                        </div>
+                    {shiftComplete &&(
+                            <div>
+                                Shift Completed! Go Home
+                            </div>
+                        )
                     }
                     <h4>Attendance List - <a href="">Export to Excel</a></h4>
                     <div></div>
