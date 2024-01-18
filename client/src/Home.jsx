@@ -3,12 +3,15 @@ import { addDays } from 'date-fns';
 import { DateRangePicker } from 'react-date-range';
 import axios from "axios"
 
+
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-import Modal from './Modal.jsx'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import Button from 'react-bootstrap/Button';
+
+import MyModal from './MyModal'
 
 export default function Home(){
     const [info,setInfo]=useState({
@@ -20,7 +23,7 @@ export default function Home(){
     const [duration, setDuration]=useState()
     const [shiftComplete, setShiftComplete]=useState(false)
     const [shiftSchedule, setShiftSchedule]=useState([])
-    const [isOpenFilter, setIsOpenFilter] = useState(false);
+    const [modalShow, setModalShow] = useState(false);
     const [calender, setCalender] = useState([
         {
             startDate: new Date(),
@@ -110,14 +113,6 @@ export default function Home(){
         return `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
 
-    const openModaFilter = () => {
-		setIsOpenFilter(true);
-	};
-	
-	const closeModalFilter = () => {
-		setIsOpenFilter(false);
-	};
-
     return(
         <>
             <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
@@ -146,14 +141,18 @@ export default function Home(){
                     <hr />
                     <a href="">Go To Attendance List</a>
                     <h4>Attendance List - <a href="">Export to Excel</a></h4>
-                    <Modal
-                        isOpen={isOpenFilter}
-                        closeModal={closeModalFilter}
-                        headerIcon={faFilter}
-                        headerText=" Attendance List"
+                    <Button variant="primary" onClick={() => setModalShow(true)}>
+                        <FontAwesomeIcon icon={faFilter} /> Filter
+                    </Button>
+                    <MyModal
+                        show={modalShow}
+                        onHide={() => setModalShow(false)}
+                        title=" Search By"
+                        icon={faFilter}
                     >
                         Employee Name:
                         <input type="text" className="form-control"/>
+                        <br />
                         <DateRangePicker
                             onChange={item => setCalender([item.selection])}
                             showSelectionPreview={true}
@@ -162,11 +161,8 @@ export default function Home(){
                             ranges={calender}
                             direction="horizontal"
                         />
-                    <button className="btn btn-primary">Search</button>
-                    </Modal>
-                    <button onClick={openModaFilter}>
-                        <FontAwesomeIcon icon={faFilter} /> Filter
-                    </button>
+                    </MyModal>
+
                     <table className='table'>
                         <thead>
                             <tr>
