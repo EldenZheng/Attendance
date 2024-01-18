@@ -11,6 +11,12 @@ app.use(express.json())
 
 mongoose.connect("mongodb://127.0.0.1:27017/Attendance")
 
+app.get('/', (req, res)=>{
+    shiftModel.find({})
+    .then(shift=>res.json(shift))
+    .catch(err=>res.json(err))
+})
+
 app.post("/login",(req, res) =>{
     const {email,password} = req.body;
     userModel.findOne({email:email})
@@ -81,7 +87,6 @@ app.put("/EndShift", (req, res) =>{
 app.get("/checkShift/:email",(req,res)=>{
     const today = new Date().toISOString().split('T')[0];
     const email = req.params.email;
-    // console.log(email," ",today)
     shiftModel.findOne({
         email: email,
         date: today
