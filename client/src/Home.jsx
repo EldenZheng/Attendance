@@ -1,17 +1,9 @@
 import { useState, useEffect } from "react"
-import { addDays } from 'date-fns';
-import { DateRangePicker } from 'react-date-range';
 import axios from "axios"
-
+import { useNavigate } from 'react-router-dom'
 
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import Button from 'react-bootstrap/Button';
-
-import MyModal from './MyModal'
 
 export default function Home(){
     const [info,setInfo]=useState({
@@ -22,17 +14,10 @@ export default function Home(){
     const [shiftStart,setShiftStart]=useState()
     const [duration, setDuration]=useState()
     const [shiftComplete, setShiftComplete]=useState(false)
-    const [shiftSchedule, setShiftSchedule]=useState([])
-    const [modalShow, setModalShow] = useState(false);
-    const [calender, setCalender] = useState([
-        {
-            startDate: new Date(),
-            endDate: addDays(new Date(), 7),
-            key: 'selection'
-        }
-    ]);
 
     const userData=JSON.parse(sessionStorage.getItem('userData'))
+
+    const navigate = useNavigate()
 
     useEffect(()=>{
         axios.get('http://localhost:3001/getUser/'+userData.email)
@@ -57,12 +42,6 @@ export default function Home(){
             else{
             }
         })
-        .catch(err=>console.log(err))
-    },[])
-
-    useEffect(()=>{
-        axios.get('http://localhost:3001')
-        .then(result => setShiftSchedule(result.data))
         .catch(err=>console.log(err))
     },[])
 
@@ -113,6 +92,10 @@ export default function Home(){
         return `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
 
+    const goToAttendance=()=>{
+        navigate('/Attendance')
+    }
+
     return(
         <>
             <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
@@ -139,56 +122,7 @@ export default function Home(){
                         )
                     }
                     <hr />
-                    <a href="">Go To Attendance List</a>
-                    <h4>Attendance List - <a href="">Export to Excel</a></h4>
-                    <Button variant="primary" onClick={() => setModalShow(true)}>
-                        <FontAwesomeIcon icon={faFilter} /> Filter
-                    </Button>
-                    <MyModal
-                        show={modalShow}
-                        onHide={() => setModalShow(false)}
-                        title=" Search By"
-                        icon={faFilter}
-                    >
-                        Employee Name:
-                        <input type="text" className="form-control"/>
-                        <br />
-                        <DateRangePicker
-                            onChange={item => setCalender([item.selection])}
-                            showSelectionPreview={true}
-                            moveRangeOnFirstSelection={false}
-                            months={2}
-                            ranges={calender}
-                            direction="horizontal"
-                        />
-                    </MyModal>
-
-                    <table className='table'>
-                        <thead>
-                            <tr>
-                                <th>Email</th>
-                                <th>Date</th>
-                                <th>Time Start</th>
-                                <th>Duration</th>
-                                <th>Time End</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                shiftSchedule.map((shiftSchedule)=>{
-                                    return(
-                                        <tr>
-                                            <td>{shiftSchedule.email}</td>
-                                            <td>{shiftSchedule.date}</td>
-                                            <td>{shiftSchedule.startTime}</td>
-                                            <td>{shiftSchedule.duration}</td>
-                                            <td>{shiftSchedule.endTime}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </table>
+                    <a href="" onClick={goToAttendance}>Go To Attendance List</a>
                 </div>
             </div>
         </>
