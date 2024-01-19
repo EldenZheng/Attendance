@@ -14,6 +14,7 @@ import Button from 'react-bootstrap/Button';
 import MyModal from './MyModal'
 
 export default function AttendanceList(){
+    const [empEmail,setEmpEmail]=useState();
     const [modalShow, setModalShow] = useState(false);
     const [shiftSchedule, setShiftSchedule]=useState([])
     const [calender, setCalender] = useState([
@@ -34,6 +35,18 @@ export default function AttendanceList(){
     const returnHome=()=>{
         navigate('/Home')
     }
+    const filter=()=>{
+        axios.get('http://localhost:3001/searchBy'+empEmail)
+        .then(result => console.log(result))
+        .catch(err=>console.log(err))
+    }
+    const handleChange = (e) => {
+        const {name,value}=e.target;
+        setEmpEmail((prevData)=>({
+            ...prevData,
+            [name]:value,
+        }))
+    }
 
     return(
         <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
@@ -48,9 +61,10 @@ export default function AttendanceList(){
                     onHide={() => setModalShow(false)}
                     title=" Search By"
                     icon={faFilter}
+                    onSearch={filter}
                 >
-                    Employee Name:
-                    <input type="text" className="form-control"/>
+                    Employee Email:
+                    <input type="text" className="form-control" value={empEmail} onChange={handleChange}/>
                     <br />
                     <DateRangePicker
                         onChange={item => setCalender([item.selection])}
@@ -59,6 +73,7 @@ export default function AttendanceList(){
                         months={2}
                         ranges={calender}
                         direction="horizontal"
+                        style={{width:'270px', color:'black'}}
                     />
                 </MyModal>
 
@@ -80,8 +95,8 @@ export default function AttendanceList(){
                                         <td>{shiftSchedule.email}</td>
                                         <td>{shiftSchedule.date}</td>
                                         <td>{shiftSchedule.startTime}</td>
-                                        <td>{shiftSchedule.duration}</td>
-                                        <td>{shiftSchedule.endTime}</td>
+                                        {shiftSchedule.duration==="0" ? (<td>On Going</td>) : (<td>{shiftSchedule.duration}</td>)}
+                                        {shiftSchedule.endTime==="00:00:00"? (<td>On Going</td>) : (<td>{shiftSchedule.endTime}</td>)}
                                     </tr>
                                 )
                             })

@@ -14,6 +14,7 @@ export default function Home(){
     const [shiftStart,setShiftStart]=useState()
     const [duration, setDuration]=useState()
     const [shiftComplete, setShiftComplete]=useState(false)
+    const [showLoading, setShowLoading] = useState(true);
 
     const userData=JSON.parse(sessionStorage.getItem('userData'))
 
@@ -24,17 +25,13 @@ export default function Home(){
         .then(result => setInfo(result.data))
         .catch(err=>console.log(err))
     },[])
+
     useEffect(()=>{
         axios.get('http://localhost:3001/checkShift/'+userData.email)
         .then(result => {
-            if(result.data==true){
+            if(result.data.hasnt==true){
                 setShiftStatus(true)
-                const currentDateandTime = new Date();
-                const hours = currentDateandTime.getHours();
-                const minutes = currentDateandTime.getMinutes();
-                const seconds = currentDateandTime.getSeconds();
-                const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                setShiftStart(formattedTime)
+                setShiftStart(result.data.startTime)
             }else if(result.data=="complete"){
                 setShiftStart(false)
                 setShiftComplete(true)
@@ -44,6 +41,12 @@ export default function Home(){
         })
         .catch(err=>console.log(err))
     },[])
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowLoading(false);
+        }, 1500);
+        return () => clearTimeout(timer);
+        }, []);
 
     const startShift= () => {
         axios.post('http://localhost:3001/StartShift', info)
@@ -100,7 +103,7 @@ export default function Home(){
         <>
             <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
                 <div className='w-50 bg-white rounded p-3'>
-                    <h3>Success! Welcome {info.email}</h3>
+                    <h3>Welcome {info.email} !</h3>
                     {!(shiftStatus) && !(shiftComplete) &&(
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 Shift Not Started
@@ -110,8 +113,15 @@ export default function Home(){
                     }
                     {shiftStatus &&  !(shiftComplete) &&(
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                Elapsed Time: {formatTime(duration)}
-                                <button className="btn btn-danger" onClick={endShift}>End Shift</button>
+                                Shift Elapsed Time: {showLoading ? (
+                                    <>Loading...</>
+                                ) : (
+                                    <>
+                                        {formatTime(duration)}
+                                        <button className="btn btn-danger" onClick={endShift}>End Shift</button>
+                                    </>
+                                )}
+                                
                             </div>
                         )
                     }

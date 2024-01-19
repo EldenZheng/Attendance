@@ -10,7 +10,6 @@ export default function myModal(props) {
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered
-            style={{color:'black'}}
         >
         <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">

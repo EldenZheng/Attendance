@@ -94,7 +94,7 @@ app.get("/checkShift/:email",(req,res)=>{
     .then(shift => {
         if (shift) {
             if(shift.duration==="0"){
-                return res.json(true);
+                return res.json({ hasnt: true, startTime: shift.startTime });
             }else{
                 return res.json("complete")
             }
