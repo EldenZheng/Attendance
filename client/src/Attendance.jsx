@@ -14,7 +14,7 @@ import Button from 'react-bootstrap/Button';
 import MyModal from './MyModal'
 
 export default function AttendanceList(){
-    const [empEmail,setEmpEmail]=useState();
+    const [empEmail,setEmpEmail]=useState('');
     const [modalShow, setModalShow] = useState(false);
     const [shiftSchedule, setShiftSchedule]=useState([])
     const [calender, setCalender] = useState([
@@ -36,16 +36,15 @@ export default function AttendanceList(){
         navigate('/Home')
     }
     const filter=()=>{
-        axios.get('http://localhost:3001/searchBy'+empEmail)
-        .then(result => console.log(result))
+        const startDate = calender[0].startDate.toISOString().split('T')[0];
+        const endDate = calender[0].endDate.toISOString().split('T')[0];
+        axios.get(`http://localhost:3001/searchBy?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`)
+        .then(result => console.log(result.data))
         .catch(err=>console.log(err))
     }
     const handleChange = (e) => {
-        const {name,value}=e.target;
-        setEmpEmail((prevData)=>({
-            ...prevData,
-            [name]:value,
-        }))
+        const {value}=e.target;
+        setEmpEmail(value)
     }
 
     return(

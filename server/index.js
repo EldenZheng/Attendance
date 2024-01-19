@@ -63,6 +63,12 @@ app.post("/StartShift",(req,res)=>{
 
 app.put("/EndShift", (req, res) =>{
     const currentDateandTime = new Date();
+    const year = currentDateandTime.getFullYear();
+    const month = currentDateandTime.getMonth() + 1;
+    const day = currentDateandTime.getDate();
+
+    const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+
     const hours = currentDateandTime.getHours();
     const minutes = currentDateandTime.getMinutes();
     const seconds = currentDateandTime.getSeconds();
@@ -70,7 +76,7 @@ app.put("/EndShift", (req, res) =>{
 
     const { email, duration } = req.body;
 
-    shiftModel.findOneAndUpdate({email:email} ,{
+    shiftModel.findOneAndUpdate({email:email,date:formattedDate} ,{
         duration: duration,
         endTime:formattedTime
     })
@@ -106,6 +112,28 @@ app.get("/checkShift/:email",(req,res)=>{
     .catch(err => res.json(err));
 });
 
+app.get('/searchBy', async (req, res) => {
+    const { startDate, endDate, empEmail } = req.query;
+    console.log('Received Query Parameters:', req.query);
+    try {
+        const filter = {};
+        if (empEmail) {
+            filter.email = empEmail;
+        }
+        if (startDate && endDate) {
+            filter.date = {
+                $gte: startDate,
+                $lte: endDate,
+            }
+        }
+        console.log('Constructed Filter:', filter);
+        const filteredData = await shiftModel.find(filter);
+        console.log('Filtered Data:', filteredData);
+        res.json(filteredData);
+    } catch (error) {
+        res.json(error);
+    }
+});
 
 app.get("/getUser/:email", (req, res) =>{
     const email = req.params.email;
