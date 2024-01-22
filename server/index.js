@@ -114,7 +114,6 @@ app.get("/checkShift/:email",(req,res)=>{
 
 app.get('/searchBy', async (req, res) => {
     const { startDate, endDate, empEmail } = req.query;
-    console.log('Received Query Parameters:', req.query);
     try {
         const filter = {};
         if (empEmail) {
@@ -126,9 +125,7 @@ app.get('/searchBy', async (req, res) => {
                 $lte: endDate,
             }
         }
-        console.log('Constructed Filter:', filter);
         const filteredData = await shiftModel.find(filter);
-        console.log('Filtered Data:', filteredData);
         res.json(filteredData);
     } catch (error) {
         res.json(error);
