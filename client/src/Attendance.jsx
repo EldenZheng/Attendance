@@ -17,6 +17,7 @@ export default function AttendanceList(){
     const [empEmail,setEmpEmail]=useState('');
     const [modalShow, setModalShow] = useState(false);
     const [shiftSchedule, setShiftSchedule]=useState([])
+    const [filteredData, setFilteredData]=useState(false);
     const [calender, setCalender] = useState([
         {
             startDate: new Date(),
@@ -26,10 +27,17 @@ export default function AttendanceList(){
     ]);
     const navigate = useNavigate()
 
-    useEffect(()=>{
+    const fetchData = () => {
         axios.get('http://localhost:3001')
-        .then(result => setShiftSchedule(result.data))
-        .catch(err=>console.log(err))
+        .then(result => {
+            setShiftSchedule(result.data)
+            setFilteredData(false)
+        })
+        .catch(err => console.log(err));
+    };
+
+    useEffect(()=>{
+        fetchData();
     },[])
 
     const returnHome=()=>{
@@ -42,6 +50,7 @@ export default function AttendanceList(){
         .then(result => {
             setShiftSchedule(result.data)
             setModalShow(false)
+            setFilteredData(true)
         })
         .catch(err=>console.log(err))
     }
@@ -57,7 +66,7 @@ export default function AttendanceList(){
                 <h4>Attendance List - <a href="">Export to Excel</a></h4>
                 <Button variant="primary" onClick={() => setModalShow(true)}>
                     <FontAwesomeIcon icon={faFilter} /> Filter
-                </Button>
+                </Button>{filteredData && (<> - <a href="" onClick={fetchData}>Show All</a></>)}
                 <MyModal
                     show={modalShow}
                     onHide={() => setModalShow(false)}
