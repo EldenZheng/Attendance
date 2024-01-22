@@ -3,6 +3,8 @@ import { addDays } from 'date-fns';
 import { DateRangePicker } from 'react-date-range';
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -59,14 +61,31 @@ export default function AttendanceList(){
         setEmpEmail(value)
     }
 
+    const exportToCSV = async () => {
+        const startDate = calender[0].startDate.toISOString().split('T')[0];
+        const endDate = calender[0].endDate.toISOString().split('T')[0];
+        const apiEndpoint = `http://localhost:3001/searchBy?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`
+        const fileName = `${startDate} - ${endDate} ${empEmail}`
+        const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        const fileExtension = '.xlsx';
+        const response = await fetch(apiEndpoint);
+        const apiData = await response.json();
+        const ws = XLSX.utils.json_to_sheet(apiData);
+        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const data = new Blob([excelBuffer], {type: fileType});
+        FileSaver.saveAs(data, fileName + fileExtension);
+    }
+
+
     return(
         <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
             <div className='w-50 bg-white rounded p-3'>
                 <a href="" onClick={returnHome}><FontAwesomeIcon icon={faChevronLeft} />Back</a> 
-                <h4>Attendance List - <a href="">Export to Excel</a></h4>
+                <h4>Attendance List{filteredData && (<> - <a onClick={exportToCSV}>Export to Excel</a></>)}</h4>
                 <Button variant="primary" onClick={() => setModalShow(true)}>
                     <FontAwesomeIcon icon={faFilter} /> Filter
-                </Button>{filteredData && (<> - <a href="" onClick={fetchData}>Show All</a></>)}
+                </Button>{filteredData && (<> - <a onClick={fetchData}>Show All</a></>)}
                 <MyModal
                     show={modalShow}
                     onHide={() => setModalShow(false)}

@@ -73,7 +73,7 @@ export default function Home(){
     useEffect(() => {
         let interval;
     
-        if (shiftStatus) {
+        if (shiftStatus && !(shiftComplete)) {
             interval = setInterval(() => {
                 const currentTime = new Date();
                 const startTime = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), ...shiftStart.split(':'));
