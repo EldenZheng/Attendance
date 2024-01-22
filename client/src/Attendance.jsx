@@ -39,7 +39,10 @@ export default function AttendanceList(){
         const startDate = calender[0].startDate.toISOString().split('T')[0];
         const endDate = calender[0].endDate.toISOString().split('T')[0];
         axios.get(`http://localhost:3001/searchBy?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`)
-        .then(result => console.log(result.data))
+        .then(result => {
+            setShiftSchedule(result.data)
+            setModalShow(false)
+        })
         .catch(err=>console.log(err))
     }
     const handleChange = (e) => {
