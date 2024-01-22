@@ -44,14 +44,15 @@ export default function Home(){
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowLoading(false);
-        }, 1500);
+        }, 2500);
         return () => clearTimeout(timer);
-        }, []);
+        }, [setShiftStatus]);
 
     const startShift= () => {
         axios.post('http://localhost:3001/StartShift', info)
-        .then(result=> {console.log(result),
-            window.location.reload();
+        .then(result=> {
+            setShiftStatus(true)
+            setShiftStart(result.data.startTime)
         })
         .catch(err=>console.log(err))
     }
@@ -63,7 +64,8 @@ export default function Home(){
         };
         axios.put('http://localhost:3001/EndShift', shiftInfo)
             .then(result => {
-                window.location.reload();
+                setShiftStart(false)
+                setShiftComplete(true)
             })
             .catch(err => console.log(err));
     };
