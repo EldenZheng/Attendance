@@ -1,3 +1,7 @@
 .rdrStaticRange{
     color:black;
 }
+a{
+    color: #6481FF !important;
+    cursor: pointer;
+}
