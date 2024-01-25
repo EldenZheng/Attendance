@@ -91,27 +91,50 @@ app.put("/EndShift", (req, res) =>{
     .catch(err=>res.json(err))
 })
 
-app.get("/checkShift/:email",(req,res)=>{
+app.get("/checkShift/:email", async (req,res)=>{
     const today = new Date().toISOString().split('T')[0];
     const email = req.params.email;
-    shiftModel.findOne({
-        email: email,
-        date: today
-    })
-    .then(shift => {
+    try {
+        const shift = await shiftModel.findOne({
+            email: email,
+            date: today
+        });
+
         if (shift) {
-            if(shift.duration==="0"){
+            if (shift.duration === "0") {
                 return res.json({ hasnt: true, startTime: shift.startTime });
-            }else{
-                return res.json("complete")
+            } else {
+                return res.json("complete");
             }
-            
-        }else {
-            
-            return res.json(false);
+        } else {
+            const user = await userModel.findOne({
+                email:email
+            });
+            if (user) {
+                switch (user.role) {
+                    case "hr":
+                        return res.json({ ScheduleStart: "08:00", ScheduleEnd: "17:00"});
+
+                    case "satpam":
+                        return res.json({ ScheduleStart: "07:00", ScheduleEnd: "19:00"});
+
+                    case "free":
+                        return res.json({ ScheduleStart: "08:00", ScheduleEnd: "17:00"});
+
+                    case "employee":
+                        return res.json({ ScheduleStart: "08:00", ScheduleEnd: "17:00"});
+
+                    case "ccp":
+                        return res.json({ ScheduleStart: "07:50", ScheduleEnd: "20:00"}); 
+
+                    default:
+                        return res.json({ ScheduleStart: "19:50", ScheduleEnd: "08:00"});
+                }
+            }
         }
-    })
-    .catch(err => res.json(err));
+    } catch (err) {
+        return res.json(err);
+    }
 });
 
 app.get('/searchBy', async (req, res) => {

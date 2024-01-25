@@ -10,6 +10,13 @@ export default function Home(){
         email: '',
         password: ''
     })
+    // const [schedule, setSchedule]=useState({
+    //     ScheduleStart:'',
+    //     ScheduleEnd:''
+    // })
+    const [scheduleStart,setScheduleStart]=useState()
+    const [scheduleEnd,setScheduleEnd]=useState()
+    const [onTime,setOnTime]=useState(true)
     const [shiftStatus,setShiftStatus]=useState(false)
     const [shiftStart,setShiftStart]=useState()
     const [duration, setDuration]=useState()
@@ -37,6 +44,22 @@ export default function Home(){
                 setShiftComplete(true)
             }
             else{
+                const currentDateTime = new Date();
+                const currentHour = currentDateTime.getHours();
+                const currentMinute = currentDateTime.getMinutes();
+
+                setScheduleStart(result.data.ScheduleStart)
+                setScheduleEnd(result.data.ScheduleEnd)
+
+                const [startHour, startMinute] = scheduleStart.split(":").map(Number);
+                const [endHour, endMinute] = scheduleEnd.split(":").map(Number);
+
+                const isWithinSchedule = (
+                    currentHour > startHour || (currentHour === startHour && currentMinute >= startMinute)
+                ) && (
+                    currentHour < endHour || (currentHour === endHour && currentMinute <= endMinute)
+                );
+                setOnTime(isWithinSchedule);
             }
         })
         .catch(err=>console.log(err))
@@ -106,6 +129,15 @@ export default function Home(){
             <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
                 <div className='w-50 bg-white rounded p-3'>
                     <h3>Welcome {info.email} !</h3>
+                    <h4>Status: {onTime ? (<>On Time</>) : (<>Late</>)}</h4>
+                    {!(onTime) && (
+                        <select>
+                            <option value="">Select Reason</option>
+                            <option value="sd">Sakit dengan surat dokter</option>
+                            <option value="tsd">Sakit tanpa surat dokter</option>
+                            <option value="t">Telat</option>
+                        </select>
+                    )}
                     {!(shiftStatus) && !(shiftComplete) &&(
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 Shift Not Started
