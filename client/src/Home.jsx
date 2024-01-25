@@ -17,6 +17,7 @@ export default function Home(){
     const [scheduleStart,setScheduleStart]=useState()
     const [scheduleEnd,setScheduleEnd]=useState()
     const [onTime,setOnTime]=useState(true)
+    const [selectedOption, setSelectedOption] = useState('');
     const [shiftStatus,setShiftStatus]=useState(false)
     const [shiftStart,setShiftStart]=useState()
     const [duration, setDuration]=useState()
@@ -72,7 +73,12 @@ export default function Home(){
         }, [setShiftStatus]);
 
     const startShift= () => {
-        axios.post('http://localhost:3001/StartShift', info)
+        const requestData = {
+            email: info.email,
+            onTime: onTime,
+            ...(selectedOption && { selectedOption: selectedOption })
+        };
+        axios.post('http://localhost:3001/StartShift', requestData)
         .then(result=> {
             setShiftStatus(true)
             setShiftStart(result.data.startTime)
@@ -120,6 +126,10 @@ export default function Home(){
         return `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
 
+    const handleOptionChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
+
     const goToAttendance=()=>{
         navigate('/Attendance')
     }
@@ -131,8 +141,8 @@ export default function Home(){
                     <h3>Welcome {info.email} !</h3>
                     <h4>Status: {onTime ? (<>On Time</>) : (<>Late</>)}</h4>
                     {!(onTime) && (
-                        <select>
-                            <option value="">Select Reason</option>
+                        <select value={selectedOption} onChange={handleOptionChange}>
+                            <option value="">-Select Reason-</option>
                             <option value="sd">Sakit dengan surat dokter</option>
                             <option value="tsd">Sakit tanpa surat dokter</option>
                             <option value="t">Telat</option>

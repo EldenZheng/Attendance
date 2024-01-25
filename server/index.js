@@ -51,12 +51,14 @@ app.post("/StartShift",(req,res)=>{
 
     const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
+    const { email, onTime, selectedOption } = req.body;
     shiftModel.create({
-        email:req.body.email,
+        email:email,
         date: formattedDate,
         startTime: formattedTime,
         duration: 0,
         endTime: '00:00:00',
+        stat: onTime ? 'On Time' : selectedOption
     })
     .then(shift=>res.json(shift))
     .catch(err=>res.json(err))
