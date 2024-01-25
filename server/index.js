@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const userModel = require('./models/Users.model')
 const shiftModel = require('./models/Attendance.models')
+const apprvModel = require('./models/Approval.model')
 
 const app= express()
 app.use(cors())
@@ -106,6 +107,7 @@ app.get("/checkShift/:email",(req,res)=>{
             }
             
         }else {
+            
             return res.json(false);
         }
     })
