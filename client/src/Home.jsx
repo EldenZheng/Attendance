@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
 
+//date range picker
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 
@@ -176,7 +177,8 @@ export default function Home(){
                         )
                     }
                     <hr />
-                    <a href="" onClick={goToAttendance}>Go To Attendance List</a>
+                    <a onClick={goToAttendance}>See Own Attendance List</a>
+                    <a onClick={goToAttendance}>Go To Attendance List</a>
                 </div>
             </div>
         </>
