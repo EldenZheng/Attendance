@@ -16,7 +16,7 @@ export default function Home(){
     //     ScheduleEnd:''
     // })
     const [scheduleStart,setScheduleStart]=useState()
-    const [scheduleEnd,setScheduleEnd]=useState()
+    // const [scheduleEnd,setScheduleEnd]=useState()
     const [onTime,setOnTime]=useState(true)
     const [selectedOption, setSelectedOption] = useState('');
     const [shiftStatus,setShiftStatus]=useState(false)
@@ -51,17 +51,21 @@ export default function Home(){
                 const currentMinute = currentDateTime.getMinutes();
 
                 setScheduleStart(result.data.ScheduleStart)
-                setScheduleEnd(result.data.ScheduleEnd)
+                // setScheduleEnd(result.data.ScheduleEnd)
 
                 const [startHour, startMinute] = scheduleStart.split(":").map(Number);
-                const [endHour, endMinute] = scheduleEnd.split(":").map(Number);
+                // const [endHour, endMinute] = scheduleEnd.split(":").map(Number);
 
-                const isWithinSchedule = (
-                    currentHour > startHour || (currentHour === startHour && currentMinute >= startMinute)
-                ) && (
-                    currentHour < endHour || (currentHour === endHour && currentMinute <= endMinute)
-                );
-                setOnTime(isWithinSchedule);
+                // const isWithinSchedule = (
+                //     currentHour > startHour || (currentHour === startHour && currentMinute >= startMinute)
+                // ) && (
+                //     currentHour < endHour || (currentHour === endHour && currentMinute <= endMinute)
+                // );
+                const thresholdHour = startHour;
+                const thresholdMinute = startMinute + 5;
+
+                const isOnTime = currentHour < thresholdHour || (currentHour === thresholdHour && currentMinute <= thresholdMinute);
+                setOnTime(isOnTime);
             }
         })
         .catch(err=>console.log(err))
