@@ -66,7 +66,7 @@ export default function AttendanceList(){
         const startDate = calender[0].startDate.toISOString().split('T')[0];
         const endDate = calender[0].endDate.toISOString().split('T')[0];
         const apiEndpoint = `http://localhost:3001/searchBy?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`
-        const fileName = `${startDate} - ${endDate} ${empEmail}`
+        const fileName = empEmail ? `${startDate} - ${endDate} ${empEmail}` : `${startDate} - ${endDate}`;
         const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         const fileExtension = '.xlsx';
         const response = await fetch(apiEndpoint);
