@@ -20,6 +20,7 @@ export default function Home(){
     const [duration, setDuration]=useState()
     const [shiftComplete, setShiftComplete]=useState(false)
     const [showLoading, setShowLoading] = useState(true);
+    const [isDlk, setIsDlk]=useState(false)
 
     const userData=JSON.parse(sessionStorage.getItem('userData'))
 
@@ -41,7 +42,8 @@ export default function Home(){
                 setShiftStart(false)
                 setShiftComplete(true)
             }else if(result.data=="free"){
-
+                setOnTime(true)
+                setIsDlk(true)
             }
             else{
                 const currentDateTime = new Date();
@@ -72,7 +74,8 @@ export default function Home(){
         const requestData = {
             email: info.email,
             onTime: onTime,
-            ...(selectedOption && { selectedOption: selectedOption })
+            ...(selectedOption && { selectedOption: selectedOption }),
+            ...(isDlk && { selectedOption: isDlk})
         };
         axios.post('http://localhost:3001/StartShift', requestData)
         .then(result=> {
@@ -147,7 +150,13 @@ export default function Home(){
                     {!(shiftStatus) && !(shiftComplete) &&(
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 Shift Not Started
-                                <button className="btn btn-primary" onClick={startShift}>Start Shift</button>
+                                <button 
+                                    className="btn btn-primary" 
+                                    onClick={startShift}
+                                    disabled={!onTime || (!onTime && selectedOption === null)}
+                                >
+                                    Start Shift
+                                </button>
                             </div>
                         )
                     }
