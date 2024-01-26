@@ -109,28 +109,38 @@ app.get("/checkShift/:email", async (req,res)=>{
                 return res.json("complete");
             }
         } else {
-            const user = await userModel.findOne({
-                email:email
-            });
-            if (user) {
-                switch (user.role) {
-                    case "hr":
-                        return res.json({ ScheduleStart: "08:00", ScheduleEnd: "17:00"});
-
-                    case "satpam":
-                        return res.json({ ScheduleStart: "07:00", ScheduleEnd: "19:00"});
-
-                    case "free":
-                        return res.json({ ScheduleStart: "08:00", ScheduleEnd: "17:00"});
-
-                    case "employee":
-                        return res.json({ ScheduleStart: "08:00", ScheduleEnd: "17:00"});
-
-                    case "ccp":
-                        return res.json({ ScheduleStart: "07:50", ScheduleEnd: "20:00"}); 
-
-                    default:
-                        return res.json({ ScheduleStart: "19:50", ScheduleEnd: "08:00"});
+            const dlk = await apprvModel.findOne({
+                email: email,
+                startDate: { $lte: today },
+                endDate: { $gte: today }
+            })
+            if(dlk){
+                return res.json("free")
+            }else{
+                const user = await userModel.findOne({
+                    email:email
+                });
+                if (user) {
+                    switch (user.role) {
+                        case "hr":
+                            return res.json({ ScheduleStart: "08:00", ScheduleEnd: "17:00"});
+    
+                        case "satpam":
+                            return res.json({ ScheduleStart: "07:00", ScheduleEnd: "19:00"});
+    
+                        case "free":
+                            // return res.json({ ScheduleStart: "08:00", ScheduleEnd: "17:00"});
+                            return res.json("free")
+    
+                        case "employee":
+                            return res.json({ ScheduleStart: "08:00", ScheduleEnd: "17:00"});
+    
+                        case "ccp":
+                            return res.json({ ScheduleStart: "07:50", ScheduleEnd: "20:00"}); 
+    
+                        default:
+                            return res.json({ ScheduleStart: "19:50", ScheduleEnd: "08:00"});
+                    }
                 }
             }
         }

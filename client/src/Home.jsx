@@ -11,12 +11,8 @@ export default function Home(){
         email: '',
         password: ''
     })
-    // const [schedule, setSchedule]=useState({
-    //     ScheduleStart:'',
-    //     ScheduleEnd:''
-    // })
+
     const [scheduleStart,setScheduleStart]=useState()
-    // const [scheduleEnd,setScheduleEnd]=useState()
     const [onTime,setOnTime]=useState(true)
     const [selectedOption, setSelectedOption] = useState('');
     const [shiftStatus,setShiftStatus]=useState(false)
@@ -44,6 +40,8 @@ export default function Home(){
             }else if(result.data=="complete"){
                 setShiftStart(false)
                 setShiftComplete(true)
+            }else if(result.data=="free"){
+
             }
             else{
                 const currentDateTime = new Date();
@@ -51,16 +49,9 @@ export default function Home(){
                 const currentMinute = currentDateTime.getMinutes();
 
                 setScheduleStart(result.data.ScheduleStart)
-                // setScheduleEnd(result.data.ScheduleEnd)
 
                 const [startHour, startMinute] = scheduleStart.split(":").map(Number);
-                // const [endHour, endMinute] = scheduleEnd.split(":").map(Number);
 
-                // const isWithinSchedule = (
-                //     currentHour > startHour || (currentHour === startHour && currentMinute >= startMinute)
-                // ) && (
-                //     currentHour < endHour || (currentHour === endHour && currentMinute <= endMinute)
-                // );
                 const thresholdHour = startHour;
                 const thresholdMinute = startMinute + 5;
 
@@ -181,7 +172,8 @@ export default function Home(){
                         )
                     }
                     <hr />
-                    <a onClick={goToAttendance}>See Own Attendance List</a>
+                    <button className="btn btn-primary" onClick={openRequest}>Requests</button>
+                    <a onClick={goToOwnAttendance}>See Own Attendance List</a>
                     <a onClick={goToAttendance}>Go To Attendance List</a>
                 </div>
             </div>
