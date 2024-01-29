@@ -169,6 +169,13 @@ app.get('/searchBy', async (req, res) => {
     }
 });
 
+app.get("/searchByEmp/:email", async(req,res)=>{
+    const email = req.params.email;
+    shiftModel.findOne({email:email})
+    .then(shift=>res.json(shift))
+    .catch(err=>res.json(err))
+})
+
 app.get("/getUser/:email", (req, res) =>{
     const email = req.params.email;
     userModel.findOne({email:email})
