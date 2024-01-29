@@ -22,7 +22,7 @@ export default function SelfAttendance(){
     },[])
 
     useEffect(()=>{
-        axios.get('http://localhost:3001/searchByEmp'+userData.email)
+        axios.get('http://localhost:3001/searchByEmp/'+userData.email)
         .then(result => {
             setShiftSchedule(result.data)
         })
@@ -32,7 +32,7 @@ export default function SelfAttendance(){
     return(
         <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
             <div className='w-50 bg-white rounded p-3'>
-                <a href="" onClick={returnHome}><FontAwesomeIcon icon={faChevronLeft} />Back</a> 
+                <a onClick={returnHome}><FontAwesomeIcon icon={faChevronLeft} />Back</a> 
                 <table className='table'>
                     <thead>
                         <tr>

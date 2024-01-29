@@ -82,7 +82,7 @@ export default function AttendanceList(){
     return(
         <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
             <div className='w-50 bg-white rounded p-3'>
-                <a href="" onClick={returnHome}><FontAwesomeIcon icon={faChevronLeft} />Back</a> 
+                <a onClick={returnHome}><FontAwesomeIcon icon={faChevronLeft} />Back</a> 
                 <h4>Attendance List{filteredData && (<> - <a onClick={exportToCSV}>Export to Excel</a></>)}</h4>
                 <Button variant="primary" onClick={() => setModalShow(true)}>
                     <FontAwesomeIcon icon={faFilter} /> Filter

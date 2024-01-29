@@ -144,7 +144,10 @@ export default function Home(){
                             <option value="">-Select Reason-</option>
                             <option value="sd">Sakit dengan surat dokter</option>
                             <option value="tsd">Sakit tanpa surat dokter</option>
-                            <option value="t">Telat</option>
+                            <option value="t1">Telat 1</option>
+                            <option value="t2">Telat 2</option>
+                            <option value="t3">Telat 3</option>
+                            <option value="t4">Telat 4</option>
                         </select>
                     )}
                     {!(shiftStatus) && !(shiftComplete) &&(
