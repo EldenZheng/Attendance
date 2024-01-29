@@ -15,6 +15,10 @@ export default function SelfAttendance(){
 
     const navigate = useNavigate()
 
+    const returnHome=()=>{
+        navigate('/Home')
+    }
+
     useEffect(()=>{
         axios.get('http://localhost:3001/getUser/'+userData.email)
         .then(result => setInfo(result.data))

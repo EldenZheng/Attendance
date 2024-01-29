@@ -2,16 +2,22 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
 
+import MyModal from './MyModal'
+
 //date range picker
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBusinessTime } from '@fortawesome/free-solid-svg-icons'
+import Button from 'react-bootstrap/Button';
 
 export default function Home(){
     const [info,setInfo]=useState({
         email: '',
         password: ''
     })
-
+    const [modalShow, setModalShow] = useState(false);
     const [scheduleStart,setScheduleStart]=useState()
     const [onTime,setOnTime]=useState(true)
     const [selectedOption, setSelectedOption] = useState('');
@@ -21,6 +27,13 @@ export default function Home(){
     const [shiftComplete, setShiftComplete]=useState(false)
     const [showLoading, setShowLoading] = useState(true);
     const [isDlk, setIsDlk]=useState(false)
+    const [calender, setCalender] = useState([
+        {
+            startDate: new Date(),
+            endDate: addDays(new Date(), 7),
+            key: 'selection'
+        }
+    ]);
 
     const userData=JSON.parse(sessionStorage.getItem('userData'))
 
@@ -98,6 +111,19 @@ export default function Home(){
             .catch(err => console.log(err));
     };
 
+    const requestDLK = () => {
+        const requestData = {
+            email: info.email,
+            startDate: calender[0].startDate.toISOString().split('T')[0],
+            endDate: calender[0].endDate.toISOString().split('T')[0]
+        };
+        axios.post('http://localhost:3001/requestApprove', requestData)
+        .then(result=> {
+            setModalShow(false)
+        })
+        .catch(err=>console.log(err))
+    }
+
     useEffect(() => {
         let interval;
     
@@ -138,6 +164,29 @@ export default function Home(){
             <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
                 <div className='w-50 bg-white rounded p-3'>
                     <h3>Welcome {info.email} !</h3>
+                    <Button variant="primary" onClick={() => setModalShow(true)}>
+                        <FontAwesomeIcon icon={faBusinessTime} /> Request DLK
+                    </Button>
+                    <MyModal
+                        show={modalShow}
+                        onHide={() => setModalShow(false)}
+                        title=" Request"
+                        icon={faBusinessTime}
+                        onSearch={requestDLK}
+                        btnSign="Request"
+                    >
+                        Select Date Range
+                        <br />
+                        <DateRangePicker
+                            onChange={item => setCalender([item.selection])}
+                            showSelectionPreview={true}
+                            moveRangeOnFirstSelection={false}
+                            months={2}
+                            ranges={calender}
+                            direction="horizontal"
+                            style={{width:'270px', color:'black'}}
+                        />
+                    </MyModal>
                     <h4>Status: {onTime ? (<>On Time</>) : (<>Late</>)}</h4>
                     {!(onTime) && (
                         <select value={selectedOption} onChange={handleOptionChange}>

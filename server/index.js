@@ -64,6 +64,17 @@ app.post("/StartShift",(req,res)=>{
     .catch(err=>res.json(err))
 })
 
+app.post("/requestApprove",(req,res)=>{
+    const { email, startDate, endDate } = req.body;
+    apprvModel.create({
+        email:email,
+        start_date: startDate,
+        end_date: endDate
+    })
+    .then(shift=>res.json(shift))
+    .catch(err=>res.json(err))
+})
+
 app.put("/EndShift", (req, res) =>{
     const currentDateandTime = new Date();
     const year = currentDateandTime.getFullYear();

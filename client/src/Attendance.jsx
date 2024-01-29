@@ -93,6 +93,7 @@ export default function AttendanceList(){
                     title=" Search By"
                     icon={faFilter}
                     onSearch={filter}
+                    btnSign="Search"
                 >
                     Employee Email:
                     <input type="text" className="form-control" value={empEmail} onChange={handleChange}/>

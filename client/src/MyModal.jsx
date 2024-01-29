@@ -2,6 +2,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import { faBusinessTime } from '@fortawesome/free-solid-svg-icons'
 
 export default function myModal(props) {
     return (
@@ -20,7 +21,7 @@ export default function myModal(props) {
             {props.children}
         </Modal.Body>
         <Modal.Footer>
-            <Button onClick={props.onSearch}>Search</Button>
+            <Button onClick={props.onSearch}>{props.btnSign}</Button>
         </Modal.Footer>
         </Modal>
     );
