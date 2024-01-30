@@ -72,7 +72,19 @@ export default function AttendanceList(){
     }
 
     const onAbsentPerEmployee = async () =>{
-        
+        const currentMonth = new Date().getMonth() + 1;
+        const currentYear = new Date().getFullYear();
+        const apiEndpoint = 'http://localhost:3001/getAbsentEachEmployee'
+        const fileName = `${currentMonth} - ${currentYear} Absent Report`;
+        const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        const fileExtension = '.xlsx';
+        const response = await fetch(apiEndpoint);
+        const apiData = await response.json();
+        const ws = XLSX.utils.json_to_sheet(apiData);
+        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const data = new Blob([excelBuffer], {type: fileType});
+        FileSaver.saveAs(data, fileName + fileExtension);
     }
 
     const exportToCSV = async () => {
