@@ -8,6 +8,9 @@ import MyModal from './MyModal'
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 
+import { addDays } from 'date-fns';
+import { DateRangePicker } from 'react-date-range';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBusinessTime } from '@fortawesome/free-solid-svg-icons'
 import Button from 'react-bootstrap/Button';
@@ -158,6 +161,11 @@ export default function Home(){
     const goToAttendance=()=>{
         navigate('/Attendance')
     }
+
+    const goToOwnAttendance=()=>{
+        navigate('/SelfAttendance')
+    }
+    
 
     return(
         <>
