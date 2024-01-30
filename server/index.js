@@ -180,7 +180,7 @@ app.get('/searchBy', async (req, res) => {
     }
 });
 
-app.get("/searchByEmp/:email", async(req,res)=>{
+app.get("/searchByEmp/:email", (req,res)=>{
     const email = req.params.email;
     shiftModel.findOne({email:email})
     .then(shift=>res.json(shift))
@@ -192,6 +192,75 @@ app.get("/getUser/:email", (req, res) =>{
     userModel.findOne({email:email})
     .then(users=>res.json(users))
     .catch(err=>res.json(err))
+})
+
+app.get('/getAbsentAllEmployee', async (req,res)=>{
+    try {
+        const currentMonth = new Date().getMonth() + 1;
+        const currentYear = new Date().getFullYear();
+
+        // Find clock-in records for the current month
+        const absentEmployees = await shiftModel.find({
+            date: {
+                $gte: new Date(currentYear, currentMonth - 1, 1),  // Start of the current month
+                $lt: new Date(currentYear, currentMonth, 1)  // Start of the next month
+            },
+            $expr: {
+                $and: [
+                    { $eq: [{ $month: "$date" }, currentMonth] },
+                    { $nin: [{ $dayOfWeek: "$date" }, 1, 7] }  // Exclude Sunday (1) and Saturday (7)
+                ]
+            }
+        });
+
+        // Find all employees
+        const allEmployees = await EmployeeModel.find({});
+
+            // Identify absent employees
+        const presentEmployeeIds = absentEmployees.map(entry => entry.employeeId);
+        const absentEmployeeQuantity = allEmployees.filter(employee => !presentEmployeeIds.includes(employee._id)).length;
+        res.json(absentEmployeeQuantity)
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.json(error.message)
+    }
+})
+
+app.get('/getAbsentEachEmployee', async (req,res)=>{
+    try {
+        const currentMonth = new Date().getMonth() + 1;
+        const currentYear = new Date().getFullYear();
+    
+        // Find all employees
+        const allEmployees = await EmployeeModel.find({});
+    
+        // Initialize an object to track absent days for each employee
+        const absentDaysMap = {};
+    
+        // Find clock-in records for the current month
+        const absentEmployees = await ClockInModel.find({
+            month: currentMonth,
+            year: currentYear,
+        });
+    
+        // Populate the absentDaysMap with absent days for each employee
+        absentEmployees.forEach(entry => {
+            const employeeId = entry.employeeId.toString();
+            if (!absentDaysMap[employeeId]) {
+                absentDaysMap[employeeId] = 1;
+            } else {
+                absentDaysMap[employeeId]++;
+            }
+        });
+          // Display the result
+        allEmployees.forEach(employee => {
+            const employeeId = employee._id.toString();
+            const absentDays = absentDaysMap[employeeId] || 0;
+            console.log(`${employee.name}: ${absentDays} days absent`);
+        });
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
 })
 
 app.listen(3001, ()=>{

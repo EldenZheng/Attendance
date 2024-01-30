@@ -21,6 +21,7 @@ export default function AttendanceList(){
     const [modalShow, setModalShow] = useState(false);
     const [shiftSchedule, setShiftSchedule]=useState([])
     const [filteredData, setFilteredData]=useState(false);
+    const [absentEmployeeNumber, setAbsentEmployeeNumber]=useState();
     const [calender, setCalender] = useState([
         {
             startDate: new Date(),
@@ -43,6 +44,14 @@ export default function AttendanceList(){
         fetchData();
     },[])
 
+    useEffect(()=>{
+        axios.get('http://localhost:3001/getAbsentAllEmployee')
+        .then(result=>{
+            setAbsentEmployeeNumber(result.data)
+        })
+        .catch(err => console.log(err));
+    },[])
+
     const returnHome=()=>{
         navigate('/Home')
     }
@@ -60,6 +69,10 @@ export default function AttendanceList(){
     const handleChange = (e) => {
         const {value}=e.target;
         setEmpEmail(value)
+    }
+
+    const onAbsentPerEmployee = async () =>{
+        
     }
 
     const exportToCSV = async () => {
@@ -108,7 +121,9 @@ export default function AttendanceList(){
                         style={{width:'270px', color:'black'}}
                     />
                 </MyModal>
-
+                <div>
+                    Total Employee Absent: {absentEmployeeNumber} | <a onClick={onAbsentPerEmployee}>Download Absent Per-Employee</a>
+                </div>
                 <table className='table'>
                     <thead>
                         <tr>
