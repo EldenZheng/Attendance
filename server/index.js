@@ -182,7 +182,7 @@ app.get('/searchBy', async (req, res) => {
 
 app.get("/searchByEmp/:email", (req,res)=>{
     const email = req.params.email;
-    shiftModel.findOne({email:email})
+    shiftModel.find({email:email})
     .then(shift=>res.json(shift))
     .catch(err=>res.json(err))
 })

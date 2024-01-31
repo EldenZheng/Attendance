@@ -6,9 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 
 export default function SelfAttendance(){
+    const [shiftSchedule, setShiftSchedule]=useState([])
     const [info,setInfo]=useState({
         email: '',
-        password: ''
+        password: '',
+        role:''
     })
 
     const userData=JSON.parse(sessionStorage.getItem('userData'))
@@ -21,11 +23,14 @@ export default function SelfAttendance(){
 
     useEffect(()=>{
         axios.get('http://localhost:3001/getUser/'+userData.email)
-        .then(result => setInfo(result.data))
+        .then(result => {setInfo(result.data)
+            console.log(result.data)
+        })
         .catch(err=>console.log(err))
     },[])
 
     useEffect(()=>{
+        console.log(userData.email)
         axios.get('http://localhost:3001/searchByEmp/'+userData.email)
         .then(result => {
             setShiftSchedule(result.data)
