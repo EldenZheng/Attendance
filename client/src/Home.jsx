@@ -67,6 +67,7 @@ export default function Home(){
                 const currentMinute = currentDateTime.getMinutes();
 
                 setScheduleStart(result.data.ScheduleStart)
+                console.log(result.data)
 
                 const [startHour, startMinute] = scheduleStart.split(":").map(Number);
 
@@ -213,7 +214,7 @@ export default function Home(){
                                 <button 
                                     className="btn btn-primary" 
                                     onClick={startShift}
-                                    disabled={!onTime || (!onTime && selectedOption === null)}
+                                    disabled={!onTime || (!onTime && selectedOption == null)}
                                 >
                                     Start Shift
                                 </button>
@@ -241,8 +242,7 @@ export default function Home(){
                         )
                     }
                     <hr />
-                    <button className="btn btn-primary" onClick={openRequest}>Requests</button>
-                    <a onClick={goToOwnAttendance}>See Own Attendance List</a>
+                    <a onClick={goToOwnAttendance}>See Own Attendance List</a> <br />
                     <a onClick={goToAttendance}>Go To Attendance List</a>
                 </div>
             </div>

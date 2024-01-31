@@ -133,7 +133,7 @@ app.get("/checkShift/:email", async (req,res)=>{
                 });
                 if (user) {
                     switch (user.role) {
-                        case "hr":
+                        case "HR":
                             return res.json({ ScheduleStart: "08:00", ScheduleEnd: "17:00"});
     
                         case "satpam":
