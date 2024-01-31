@@ -208,7 +208,8 @@ app.get('/getAbsentAllEmployee', async (req,res)=>{
             $expr: {
                 $and: [
                     { $eq: [{ $month: "$date" }, currentMonth] },
-                    { $nin: [{ $dayOfWeek: "$date" }, 1, 7] }  // Exclude Sunday (1) and Saturday (7)
+                    { $ne: [{ $dayOfWeek: "$date" }, 1] }, // Exclude Sunday (1)
+                    { $ne: [{ $dayOfWeek: "$date" }, 7] }  // Exclude Saturday (7)
                 ]
             }
         });
@@ -217,8 +218,10 @@ app.get('/getAbsentAllEmployee', async (req,res)=>{
         const allEmployees = await userModel.find({});
 
             // Identify absent employees
-        const presentEmployeeIds = absentEmployees.map(entry => entry.employeeId);
-        const absentEmployeeQuantity = allEmployees.filter(employee => !presentEmployeeIds.includes(employee._id)).length;
+        const presentEmployeeIds = absentEmployees.map(entry => entry.email);
+        console.log(presentEmployeeIds)
+        const absentEmployeeQuantity = allEmployees.filter(employee => !presentEmployeeIds.includes(employee.email)).length;
+        console.log(absentEmployeeQuantity)
         res.json(absentEmployeeQuantity)
     } catch (error) {
         console.error('Error:', error.message);

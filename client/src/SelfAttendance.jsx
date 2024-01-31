@@ -23,14 +23,11 @@ export default function SelfAttendance(){
 
     useEffect(()=>{
         axios.get('http://localhost:3001/getUser/'+userData.email)
-        .then(result => {setInfo(result.data)
-            console.log(result.data)
-        })
+        .then(result => setInfo(result.data))
         .catch(err=>console.log(err))
     },[])
 
     useEffect(()=>{
-        console.log(userData.email)
         axios.get('http://localhost:3001/searchByEmp/'+userData.email)
         .then(result => {
             setShiftSchedule(result.data)
