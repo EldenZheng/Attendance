@@ -21,7 +21,6 @@ export default function Home(){
         password: ''
     })
     const [modalShow, setModalShow] = useState(false);
-    const [scheduleStart,setScheduleStart]=useState()
     const [onTime,setOnTime]=useState(true)
     const [selectedOption, setSelectedOption] = useState('');
     const [shiftStatus,setShiftStatus]=useState(false)
@@ -66,10 +65,7 @@ export default function Home(){
                 const currentHour = currentDateTime.getHours();
                 const currentMinute = currentDateTime.getMinutes();
 
-                setScheduleStart(result.data.ScheduleStart)
-                console.log(result.data)
-
-                const [startHour, startMinute] = scheduleStart.split(":").map(Number);
+                const [startHour, startMinute] = result.data.ScheduleStart.split(":").map(Number);
 
                 const thresholdHour = startHour;
                 const thresholdMinute = startMinute + 5;
