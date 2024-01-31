@@ -22,7 +22,7 @@ export default function Home(){
     })
     const [modalShow, setModalShow] = useState(false);
     const [onTime,setOnTime]=useState(true)
-    const [selectedOption, setSelectedOption] = useState('');
+    const [selectedOption, setSelectedOption] = useState();
     const [shiftStatus,setShiftStatus]=useState(false)
     const [shiftStart,setShiftStart]=useState()
     const [duration, setDuration]=useState()
@@ -153,6 +153,8 @@ export default function Home(){
 
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
+        console.log(selectedOption)
+        console.log(!onTime || (!onTime && selectedOption == ""))
     };
 
     const goToAttendance=()=>{
@@ -210,7 +212,7 @@ export default function Home(){
                                 <button 
                                     className="btn btn-primary" 
                                     onClick={startShift}
-                                    disabled={!onTime || (!onTime && selectedOption == null)}
+                                    disabled={!onTime && selectedOption == ""}
                                 >
                                     Start Shift
                                 </button>
