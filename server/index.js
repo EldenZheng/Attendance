@@ -13,6 +13,18 @@ app.use(express.json())
 
 mongoose.connect("mongodb://127.0.0.1:27017/Attendance")
 
+function countWeekdays(start, end) {
+    let totalDays = 0;
+    while (start <= end) {
+        const dayOfWeek = start.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Exclude Sunday (0) and Saturday (6)
+            totalDays++;
+        }
+        start.setDate(start.getDate() + 1); // Move to the next day
+    }
+    return totalDays;
+}
+
 app.get('/', (req, res)=>{
     shiftModel.find({})
     .then(shift=>res.json(shift))
@@ -202,7 +214,7 @@ app.get('/getAbsentAllEmployee', async (req,res)=>{
         const currentYear = new Date().getFullYear();
         const startOfTheMonth = `${currentYear}-${String(currentMonth).padStart(2, '0')}-01`;
         const currentDate = new Date().toISOString().split('T')[0];
-        const currentDay = new Date().getDate();
+        const totalDaysInMonth = countWeekdays(new Date(startOfTheMonth), new Date(currentDate));
 
         const pipeline = [
             {
@@ -221,7 +233,7 @@ app.get('/getAbsentAllEmployee', async (req,res)=>{
             },
             {
                 $project: {
-                    absentDays: { $subtract: [currentDay, "$totalDays"] } // Subtract totalDays from currentDay
+                    absentDays: { $subtract: [totalDaysInMonth, "$totalDays"] } // Subtract totalDays from currentDay
                 }
             },
             {
