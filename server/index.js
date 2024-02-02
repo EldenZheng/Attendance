@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { promisify } = require('util');
 
 const userModel = require('./models/Users.model')
 const shiftModel = require('./models/Attendance.models')
@@ -202,23 +203,28 @@ app.get('/getAbsentAllEmployee', async (req,res)=>{
         const currentYear = new Date().getFullYear();
         const startOfTheMonth = `${currentYear}-${String(currentMonth).padStart(2, '0')}-01`;
         const startOfTheNextMonth = `${currentYear}-${String(nextMonth).padStart(2, '0')}-01`;
-        console.log(startOfTheMonth+", "+startOfTheNextMonth)
         
         // Find clock-in records for the current month
-        const absentEmployees = await shiftModel.find({
-            date: {
-                $gte: new Date(startOfTheMonth).toISOString().split('T')[0],
-                $lte: new Date(startOfTheNextMonth).toISOString().split('T')[0]
+        const absentEmployees = await shiftModel.aggregate([
+            {
+                $match: {
+                    date: {
+                        $gte: startOfTheMonth,
+                        $lt: startOfTheNextMonth
+                    }
+                }
             },
-            $expr: {
-                $and: [
-                    { $eq: [{ $month: "$date" }, currentMonth] },
-                    { $ne: [{ $dayOfWeek: "$date" }, 1] }, // Exclude Sunday (1)
-                    { $ne: [{ $dayOfWeek: "$date" }, 7] }  // Exclude Saturday (7)
-                ]
+            {
+                $addFields: {
+                    dayOfWeek: { $dayOfWeek: { $toDate: "$date" } }
+                }
+            },
+            {
+                $match: {
+                    dayOfWeek: { $nin: [1, 7] } // Exclude Sunday (1) and Saturday (7)
+                }
             }
-        });
-        console.log(absentEmployees)
+        ]);
 
         // Find all employees
         const allEmployees = await userModel.find({});
