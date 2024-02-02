@@ -199,42 +199,41 @@ app.get("/getUser/:email", (req, res) =>{
 app.get('/getAbsentAllEmployee', async (req,res)=>{
     try {
         const currentMonth = new Date().getMonth() + 1;
-        const nextMonth = new Date().getMonth() + 2;
+        // const nextMonth = new Date().getMonth() + 2;
         const currentYear = new Date().getFullYear();
         const startOfTheMonth = `${currentYear}-${String(currentMonth).padStart(2, '0')}-01`;
-        const startOfTheNextMonth = `${currentYear}-${String(nextMonth).padStart(2, '0')}-01`;
-        
-        // Find clock-in records for the current month
-        const absentEmployees = await shiftModel.aggregate([
+        const currentDate = new Date().toISOString().split('T')[0];
+        // const startOfTheNextMonth = `${currentYear}-${String(nextMonth).padStart(2, '0')}-01`;
+        const totalDaysInMonth=new Date(currentYear, currentMonth, 0).getDate();
+
+        const pipeline = [
             {
                 $match: {
                     date: {
                         $gte: startOfTheMonth,
-                        $lt: startOfTheNextMonth
+                        $lte: currentDate
                     }
                 }
             },
             {
-                $addFields: {
-                    dayOfWeek: { $dayOfWeek: { $toDate: "$date" } }
+                $group: {
+                    _id: "$email", // Group by employee email
+                    totalDays: { $sum: 1 } // For each shift, add 1
                 }
             },
             {
-                $match: {
-                    dayOfWeek: { $nin: [1, 7] } // Exclude Sunday (1) and Saturday (7)
+                $project: {
+                    _id: 0, // Exclude this from final output
+                    email: "$_id", // Rename _id to email
+                    absentDays: { $subtract: [totalDaysInMonth, "$totalDays"] } // Subtract totalDays from totalDaysInMonth
                 }
             }
-        ]);
+        ];
+        
+        const employeeAbsences = await shiftModel.aggregate(pipeline);
+        console.log(employeeAbsences)
+        res.json(employeeAbsences)
 
-        // Find all employees
-        const allEmployees = await userModel.find({});
-
-        // Identify absent employees
-        const presentEmployeeIds = absentEmployees.map(entry => entry.email.toLowerCase());
-        console.log("presentEmployeeIds:"+presentEmployeeIds)
-        const absentEmployeeQuantity = allEmployees.filter(employee => !presentEmployeeIds.includes(employee.email)).length;
-        console.log("absentEmployeeQuantity: "+absentEmployeeQuantity)
-        res.json(absentEmployeeQuantity)
     } catch (error) {
         console.error('Error:', error.message);
         res.json(error.message)
