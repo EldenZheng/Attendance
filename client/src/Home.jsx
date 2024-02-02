@@ -210,7 +210,7 @@ export default function Home(){
                                 <button 
                                     className="btn btn-primary" 
                                     onClick={startShift}
-                                    disabled={!onTime && selectedOption == ""}
+                                    disabled={!onTime && (selectedOption == null||selectedOption=="")}
                                 >
                                     Start Shift
                                 </button>

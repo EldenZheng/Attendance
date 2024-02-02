@@ -217,11 +217,11 @@ app.get('/getAbsentAllEmployee', async (req,res)=>{
         // Find all employees
         const allEmployees = await userModel.find({});
 
-            // Identify absent employees
+        // Identify absent employees
         const presentEmployeeIds = absentEmployees.map(entry => entry.email);
-        console.log(presentEmployeeIds)
+        console.log("presentEmployeeIds:"+presentEmployeeIds)
         const absentEmployeeQuantity = allEmployees.filter(employee => !presentEmployeeIds.includes(employee.email)).length;
-        console.log(absentEmployeeQuantity)
+        console.log("absentEmployeeQuantity"+absentEmployeeQuantity)
         res.json(absentEmployeeQuantity)
     } catch (error) {
         console.error('Error:', error.message);
