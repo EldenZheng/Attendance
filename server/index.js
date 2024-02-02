@@ -173,6 +173,7 @@ app.get('/searchBy', async (req, res) => {
                 $lte: endDate,
             }
         }
+        console.log(filter)
         const filteredData = await shiftModel.find(filter);
         res.json(filteredData);
     } catch (error) {
@@ -197,13 +198,17 @@ app.get("/getUser/:email", (req, res) =>{
 app.get('/getAbsentAllEmployee', async (req,res)=>{
     try {
         const currentMonth = new Date().getMonth() + 1;
+        const nextMonth = new Date().getMonth() + 2;
         const currentYear = new Date().getFullYear();
-
+        const startOfTheMonth = `${currentYear}-${String(currentMonth).padStart(2, '0')}-01`;
+        const startOfTheNextMonth = `${currentYear}-${String(nextMonth).padStart(2, '0')}-01`;
+        console.log(startOfTheMonth+", "+startOfTheNextMonth)
+        
         // Find clock-in records for the current month
         const absentEmployees = await shiftModel.find({
             date: {
-                $gte: new Date(currentYear, currentMonth - 1, 1),  // Start of the current month
-                $lt: new Date(currentYear, currentMonth, 1)  // Start of the next month
+                $gte: new Date(startOfTheMonth).toISOString().split('T')[0],
+                $lte: new Date(startOfTheNextMonth).toISOString().split('T')[0]
             },
             $expr: {
                 $and: [
@@ -213,15 +218,16 @@ app.get('/getAbsentAllEmployee', async (req,res)=>{
                 ]
             }
         });
+        console.log(absentEmployees)
 
         // Find all employees
         const allEmployees = await userModel.find({});
 
         // Identify absent employees
-        const presentEmployeeIds = absentEmployees.map(entry => entry.email);
+        const presentEmployeeIds = absentEmployees.map(entry => entry.email.toLowerCase());
         console.log("presentEmployeeIds:"+presentEmployeeIds)
         const absentEmployeeQuantity = allEmployees.filter(employee => !presentEmployeeIds.includes(employee.email)).length;
-        console.log("absentEmployeeQuantity"+absentEmployeeQuantity)
+        console.log("absentEmployeeQuantity: "+absentEmployeeQuantity)
         res.json(absentEmployeeQuantity)
     } catch (error) {
         console.error('Error:', error.message);

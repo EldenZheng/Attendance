@@ -134,7 +134,7 @@ export default function AttendanceList(){
                     />
                 </MyModal>
                 <div>
-                    Total Employee Absent: {absentEmployeeNumber} | <a onClick={onAbsentPerEmployee}>Download Absent Per-Employee</a>
+                    Total Employee Absent This Month: {absentEmployeeNumber} | <a onClick={onAbsentPerEmployee}>Download Absent Per-Employee</a>
                 </div>
                 <table className='table'>
                     <thead>
