@@ -199,11 +199,11 @@ app.get("/getUser/:email", (req, res) =>{
 app.get('/getAbsentAllEmployee', async (req,res)=>{
     try {
         const currentMonth = new Date().getMonth() + 1;
-        // const nextMonth = new Date().getMonth() + 2;
+        const nextMonth = new Date().getMonth() + 2;
         const currentYear = new Date().getFullYear();
         const startOfTheMonth = `${currentYear}-${String(currentMonth).padStart(2, '0')}-01`;
         const currentDate = new Date().toISOString().split('T')[0];
-        // const startOfTheNextMonth = `${currentYear}-${String(nextMonth).padStart(2, '0')}-01`;
+        const startOfTheNextMonth = `${currentYear}-${String(nextMonth).padStart(2, '0')}-01`;
         const totalDaysInMonth=new Date(currentYear, currentMonth, 0).getDate();
 
         const pipeline = [
@@ -211,7 +211,7 @@ app.get('/getAbsentAllEmployee', async (req,res)=>{
                 $match: {
                     date: {
                         $gte: startOfTheMonth,
-                        $lte: currentDate
+                        $lte: startOfTheNextMonth
                     }
                 }
             },
@@ -223,22 +223,27 @@ app.get('/getAbsentAllEmployee', async (req,res)=>{
             },
             {
                 $project: {
-                    _id: 0, // Exclude this from final output
-                    email: "$_id", // Rename _id to email
                     absentDays: { $subtract: [totalDaysInMonth, "$totalDays"] } // Subtract totalDays from totalDaysInMonth
+                }
+            },
+            {
+                $group: {
+                    _id: null, // Group all records together
+                    totalAbsentDays: { $sum: "$absentDays" } // Sum up all absent days
                 }
             }
         ];
         
-        const employeeAbsences = await shiftModel.aggregate(pipeline);
-        console.log(employeeAbsences)
-        res.json(employeeAbsences)
+        const totalAbsences = await shiftModel.aggregate(pipeline);
+        console.log(totalAbsences[0].totalAbsentDays)
+        res.json(totalAbsences[0].totalAbsentDays)
 
     } catch (error) {
         console.error('Error:', error.message);
         res.json(error.message)
     }
 })
+
 
 app.get('/getAbsentEachEmployee', async (req,res)=>{
     try {
