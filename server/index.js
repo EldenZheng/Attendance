@@ -199,19 +199,17 @@ app.get("/getUser/:email", (req, res) =>{
 app.get('/getAbsentAllEmployee', async (req,res)=>{
     try {
         const currentMonth = new Date().getMonth() + 1;
-        const nextMonth = new Date().getMonth() + 2;
         const currentYear = new Date().getFullYear();
         const startOfTheMonth = `${currentYear}-${String(currentMonth).padStart(2, '0')}-01`;
         const currentDate = new Date().toISOString().split('T')[0];
-        const startOfTheNextMonth = `${currentYear}-${String(nextMonth).padStart(2, '0')}-01`;
-        const totalDaysInMonth=new Date(currentYear, currentMonth, 0).getDate();
+        const currentDay = new Date().getDate();
 
         const pipeline = [
             {
                 $match: {
                     date: {
                         $gte: startOfTheMonth,
-                        $lte: startOfTheNextMonth
+                        $lte: currentDate
                     }
                 }
             },
@@ -223,7 +221,7 @@ app.get('/getAbsentAllEmployee', async (req,res)=>{
             },
             {
                 $project: {
-                    absentDays: { $subtract: [totalDaysInMonth, "$totalDays"] } // Subtract totalDays from totalDaysInMonth
+                    absentDays: { $subtract: [currentDay, "$totalDays"] } // Subtract totalDays from currentDay
                 }
             },
             {
@@ -233,9 +231,8 @@ app.get('/getAbsentAllEmployee', async (req,res)=>{
                 }
             }
         ];
-        
+
         const totalAbsences = await shiftModel.aggregate(pipeline);
-        console.log(totalAbsences[0].totalAbsentDays)
         res.json(totalAbsences[0].totalAbsentDays)
 
     } catch (error) {
