@@ -5,7 +5,6 @@ const apprvSchema = new mongoose.Schema({
     approvalType: String,
     startDate: String,
     endDate: String,
-    duration: String,
     status: String
 })
 

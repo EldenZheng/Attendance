@@ -80,8 +80,10 @@ app.post("/requestApprove",(req,res)=>{
     const { email, startDate, endDate } = req.body;
     apprvModel.create({
         email:email,
-        start_date: startDate,
-        end_date: endDate
+        approvalType: "DLK",
+        startDate: startDate,
+        endDate: endDate,
+        status: "Approved"
     })
     .then(shift=>res.json(shift))
     .catch(err=>res.json(err))

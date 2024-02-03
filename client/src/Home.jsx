@@ -117,6 +117,7 @@ export default function Home(){
             startDate: calender[0].startDate.toISOString().split('T')[0],
             endDate: calender[0].endDate.toISOString().split('T')[0]
         };
+        console.log(requestData)
         axios.post('http://localhost:3001/requestApprove', requestData)
         .then(result=> {
             setModalShow(false)
