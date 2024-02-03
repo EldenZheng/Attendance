@@ -103,6 +103,11 @@ export default function AttendanceList(){
         FileSaver.saveAs(data, fileName + fileExtension);
     }
 
+    const exportData = async () =>{
+        await exportToCSV();
+        await onAbsentPerEmployee();
+    }
+
 
     return(
         <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
@@ -134,7 +139,7 @@ export default function AttendanceList(){
                     />
                 </MyModal>
                 <div>
-                    Total Employee Absent This Month: {absentEmployeeNumber} | <a onClick={onAbsentPerEmployee}>Download Absent Per-Employee</a>
+                    Current Total Employee Absent This Month: {absentEmployeeNumber} {filteredData && (<> | <a onClick={onAbsentPerEmployee}>Download Absent Per-Employee</a></>)}
                 </div>
                 <table className='table'>
                     <thead>
