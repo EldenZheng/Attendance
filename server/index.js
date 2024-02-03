@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const { promisify } = require('util');
 
 const userModel = require('./models/Users.model')
 const shiftModel = require('./models/Attendance.models')
