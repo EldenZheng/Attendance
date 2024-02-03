@@ -88,7 +88,8 @@ export default function AttendanceList(){
     }
 
     const exportToCSV = async () => {
-        
+        const startDate = calender[0].startDate.toISOString().split('T')[0];
+        const endDate = calender[0].endDate.toISOString().split('T')[0];
         const apiEndpoint = `http://localhost:3001/searchBy?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`
         const fileName = empEmail ? `${startDate} - ${endDate} ${empEmail} Attendance Report` : `${startDate} - ${endDate} Attendance Report`;
         const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';

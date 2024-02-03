@@ -186,7 +186,6 @@ app.get('/searchBy', async (req, res) => {
                 $lte: endDate,
             }
         }
-        console.log(filter)
         const filteredData = await shiftModel.find(filter);
         res.json(filteredData);
     } catch (error) {
@@ -256,45 +255,40 @@ app.get('/getAbsentAllEmployee', async (req,res)=>{
 
 app.get('/getAbsentEachEmployee', async (req,res)=>{
     try {
-        const currentMonth = new Date().getMonth() + 1;
-        const currentYear = new Date().getFullYear();
-    
-        // Find all employees
-        const allEmployees = await userModel.find({});
-    
-        // Initialize an object to track absent days for each employee
-        const absentDaysMap = {};
-    
-        // Find clock-in records for the current month
-        const absentEmployees = await shiftModel.find({
-            date: {
-                $gte: new Date(currentYear, currentMonth - 1, 1),  // Start of the current month
-                $lt: new Date(currentYear, currentMonth, 1)  // Start of the next month
+        const { startDate, endDate, empEmail } = req.query;
+        const totalWorkDays = countWeekdays(new Date(startDate), new Date(endDate));
+
+        const filter = {};
+        if (empEmail) {
+            filter.email = empEmail;
+        }
+        if (startDate && endDate) {
+            filter.date = {
+                $gte: startDate,
+                $lte: endDate,
+            }
+        }
+        const pipeline = [
+            {
+                $match: filter
             },
-            $expr: {
-                $and: [
-                    { $eq: [{ $month: "$date" }, currentMonth] },
-                    { $nin: [{ $dayOfWeek: "$date" }, 1, 7] }  // Exclude Sunday (1) and Saturday (7)
-                ]
+            {
+                $group: {
+                    _id: "$email", // Group by employee email
+                    totalDays: { $sum: 1 } // For each shift, add 1
+                }
+            },
+            {
+                $project: {
+                    _id: 0, // Exclude this from final output
+                    email: "$_id", // Rename _id to email
+                    absentDays: { $subtract: [totalWorkDays, "$totalDays"] } // Subtract totalDays from totalDaysInMonth
+                }
             }
-        });
-    
-        // Populate the absentDaysMap with absent days for each employee
-        absentEmployees.forEach(entry => {
-            const email = entry.email;
-            if (!absentDaysMap[email]) {
-                absentDaysMap[email] = 1;
-            } else {
-                absentDaysMap[email]++;
-            }
-        });
-          // Display the result
-        allEmployees.forEach(employee => {
-            const email = employee.email;
-            const absentDays = absentDaysMap[email] || 0;
-            const absentData = `${employee.email}: ${absentDays} day(s) absent`;
-            res.json(absentData)
-        });
+        ];
+
+        const employeeAbsences = await shiftModel.aggregate(pipeline);
+        res.json(employeeAbsences)
         } catch (error) {
             console.error('Error:', error.message);
             res.json(error.message)
