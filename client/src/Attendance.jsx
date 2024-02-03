@@ -72,10 +72,10 @@ export default function AttendanceList(){
     }
 
     const onAbsentPerEmployee = async () =>{
-        const currentMonth = new Date().getMonth() + 1;
-        const currentYear = new Date().getFullYear();
-        const apiEndpoint = 'http://localhost:3001/getAbsentEachEmployee'
-        const fileName = `${currentMonth} - ${currentYear} Absent Report`;
+        const startDate = calender[0].startDate.toISOString().split('T')[0];
+        const endDate = calender[0].endDate.toISOString().split('T')[0];
+        const apiEndpoint = `http://localhost:3001/getAbsentEachEmployee?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`
+        const fileName = empEmail ? `${startDate} - ${endDate} ${empEmail} Absent Report` : `${startDate} - ${endDate} Absent Report`;
         const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         const fileExtension = '.xlsx';
         const response = await fetch(apiEndpoint);
@@ -88,10 +88,9 @@ export default function AttendanceList(){
     }
 
     const exportToCSV = async () => {
-        const startDate = calender[0].startDate.toISOString().split('T')[0];
-        const endDate = calender[0].endDate.toISOString().split('T')[0];
+        
         const apiEndpoint = `http://localhost:3001/searchBy?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`
-        const fileName = empEmail ? `${startDate} - ${endDate} ${empEmail}` : `${startDate} - ${endDate}`;
+        const fileName = empEmail ? `${startDate} - ${endDate} ${empEmail} Attendance Report` : `${startDate} - ${endDate} Attendance Report`;
         const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         const fileExtension = '.xlsx';
         const response = await fetch(apiEndpoint);
@@ -113,7 +112,7 @@ export default function AttendanceList(){
         <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
             <div className='w-50 bg-white rounded p-3'>
                 <a onClick={returnHome}><FontAwesomeIcon icon={faChevronLeft} />Back</a> 
-                <h4>Attendance List{filteredData && (<> - <a onClick={exportToCSV}>Export to Excel</a></>)}</h4>
+                <h4>Attendance List{filteredData && (<> - <a onClick={exportData}>Export to Excel</a></>)}</h4>
                 <Button variant="primary" onClick={() => setModalShow(true)}>
                     <FontAwesomeIcon icon={faFilter} /> Filter
                 </Button>{filteredData && (<> - <a onClick={fetchData}>Show All</a></>)}
@@ -139,7 +138,7 @@ export default function AttendanceList(){
                     />
                 </MyModal>
                 <div>
-                    Current Total Employee Absent This Month: {absentEmployeeNumber} {filteredData && (<> | <a onClick={onAbsentPerEmployee}>Download Absent Per-Employee</a></>)}
+                    Current Total Employee Absent This Month: {absentEmployeeNumber}
                 </div>
                 <table className='table'>
                     <thead>
