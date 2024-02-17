@@ -41,7 +41,7 @@ app.get('/getShift', (req, res)=>{
     .catch(err=>res.json(err))
 })
 
-app.post("/login",(req, res) =>{
+app.post("/Login",(req, res) =>{
     const {email,password} = req.body;
     userModel.findOne({email:email})
     .then(users=>{
