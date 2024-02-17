@@ -32,6 +32,10 @@ function countWeekdays(start, end) {
 }
 
 app.get('/', (req, res)=>{
+    res.json("Server is running!")
+})
+
+app.get('/getShift', (req, res)=>{
     shiftModel.find({})
     .then(shift=>res.json(shift))
     .catch(err=>res.json(err))

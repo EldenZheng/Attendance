@@ -33,7 +33,7 @@ export default function AttendanceList(){
     axios.defaults.withCredentials=true;
 
     const fetchData = () => {
-        axios.get('https://attendance-api-rouge.vercel.app')
+        axios.get('https://attendance-api-rouge.vercel.app/getShift')
         .then(result => {
             setShiftSchedule(result.data)
             setFilteredData(false)
