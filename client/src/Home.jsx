@@ -42,13 +42,13 @@ export default function Home(){
     const navigate = useNavigate()
 
     useEffect(()=>{
-        axios.get('http://attendance-api-rouge.vercel.app/getUser/'+userData.email)
+        axios.get('https://attendance-api-rouge.vercel.app/getUser/'+userData.email)
         .then(result => setInfo(result.data))
         .catch(err=>console.log(err))
     },[])
 
     useEffect(()=>{
-        axios.get('http://attendance-api-rouge.vercel.app/checkShift/'+userData.email)
+        axios.get('https://attendance-api-rouge.vercel.app/checkShift/'+userData.email)
         .then(result => {
             if(result.data.hasnt==true){
                 setShiftStatus(true)
@@ -90,7 +90,7 @@ export default function Home(){
             ...(selectedOption && { selectedOption: selectedOption }),
             ...(isDlk && { selectedOption: isDlk})
         };
-        axios.post('http://attendance-api-rouge.vercel.app/StartShift', requestData)
+        axios.post('https://attendance-api-rouge.vercel.app/StartShift', requestData)
         .then(result=> {
             setShiftStatus(true)
             setShiftStart(result.data.startTime)
@@ -103,7 +103,7 @@ export default function Home(){
             email: info.email,
             duration: formatTime(duration)
         };
-        axios.put('http://attendance-api-rouge.vercel.app/EndShift', shiftInfo)
+        axios.put('https://attendance-api-rouge.vercel.app/EndShift', shiftInfo)
             .then(result => {
                 setShiftStart(false)
                 setShiftComplete(true)
@@ -118,7 +118,7 @@ export default function Home(){
             endDate: calender[0].endDate.toISOString().split('T')[0]
         };
         console.log(requestData)
-        axios.post('http://attendance-api-rouge.vercel.app/requestApprove', requestData)
+        axios.post('https://attendance-api-rouge.vercel.app/requestApprove', requestData)
         .then(result=> {
             setModalShow(false)
         })

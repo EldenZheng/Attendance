@@ -33,7 +33,7 @@ export default function AttendanceList(){
     axios.defaults.withCredentials=true;
 
     const fetchData = () => {
-        axios.get('http://attendance-api-rouge.vercel.app')
+        axios.get('https://attendance-api-rouge.vercel.app')
         .then(result => {
             setShiftSchedule(result.data)
             setFilteredData(false)
@@ -46,7 +46,7 @@ export default function AttendanceList(){
     },[])
 
     useEffect(()=>{
-        axios.get('http://attendance-api-rouge.vercel.app/getAbsentAllEmployee')
+        axios.get('https://attendance-api-rouge.vercel.app/getAbsentAllEmployee')
         .then(result=>{
             setAbsentEmployeeNumber(result.data)
         })
@@ -59,7 +59,7 @@ export default function AttendanceList(){
     const filter=()=>{
         const startDate = calender[0].startDate.toISOString().split('T')[0];
         const endDate = calender[0].endDate.toISOString().split('T')[0];
-        axios.get(`http://attendance-api-rouge.vercel.app/searchBy?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`)
+        axios.get(`https://attendance-api-rouge.vercel.app/searchBy?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`)
         .then(result => {
             setShiftSchedule(result.data)
             setModalShow(false)
@@ -75,7 +75,7 @@ export default function AttendanceList(){
     const onAbsentPerEmployee = async () =>{
         const startDate = calender[0].startDate.toISOString().split('T')[0];
         const endDate = calender[0].endDate.toISOString().split('T')[0];
-        const apiEndpoint = `http://attendance-api-rouge.vercel.app/getAbsentEachEmployee?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`
+        const apiEndpoint = `https://attendance-api-rouge.vercel.app/getAbsentEachEmployee?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`
         const fileName = empEmail ? `${startDate} - ${endDate} ${empEmail} Absent Report` : `${startDate} - ${endDate} Absent Report`;
         const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         const fileExtension = '.xlsx';
@@ -91,7 +91,7 @@ export default function AttendanceList(){
     const exportToCSV = async () => {
         const startDate = calender[0].startDate.toISOString().split('T')[0];
         const endDate = calender[0].endDate.toISOString().split('T')[0];
-        const apiEndpoint = `http://attendance-api-rouge.vercel.app/searchBy?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`
+        const apiEndpoint = `https://attendance-api-rouge.vercel.app/searchBy?startDate=${startDate}&endDate=${endDate}&empEmail=${empEmail}`
         const fileName = empEmail ? `${startDate} - ${endDate} ${empEmail} Attendance Report` : `${startDate} - ${endDate} Attendance Report`;
         const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
         const fileExtension = '.xlsx';
