@@ -11,7 +11,7 @@ export default function CreateUser(){
 
     const Login = (e)=>{
         e.preventDefault();
-        axios.post("http://localhost:3001/Login",formData)
+        axios.post("http://attendance-api-rouge.vercel.app/Login",formData)
         .then(result =>{
             if(result.data === "success"){
                 sessionStorage.setItem('userData',JSON.stringify(formData))

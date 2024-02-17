@@ -22,13 +22,13 @@ export default function SelfAttendance(){
     }
 
     useEffect(()=>{
-        axios.get('http://localhost:3001/getUser/'+userData.email)
+        axios.get('http://attendance-api-rouge.vercel.app/getUser/'+userData.email)
         .then(result => setInfo(result.data))
         .catch(err=>console.log(err))
     },[])
 
     useEffect(()=>{
-        axios.get('http://localhost:3001/searchByEmp/'+userData.email)
+        axios.get('http://attendance-api-rouge.vercel.app/searchByEmp/'+userData.email)
         .then(result => {
             setShiftSchedule(result.data)
         })
