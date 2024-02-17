@@ -30,6 +30,7 @@ export default function AttendanceList(){
         }
     ]);
     const navigate = useNavigate()
+    axios.defaults.withCredentials=true;
 
     const fetchData = () => {
         axios.get('http://attendance-api-rouge.vercel.app')

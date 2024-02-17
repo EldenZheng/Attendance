@@ -8,7 +8,7 @@ export default function CreateUser(){
         password: ''
     })
     const navigate = useNavigate()
-
+    axios.defaults.withCredentials=true;
     const Login = (e)=>{
         e.preventDefault();
         axios.post("http://attendance-api-rouge.vercel.app/Login",formData)

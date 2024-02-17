@@ -14,7 +14,7 @@ export default function SelfAttendance(){
     })
 
     const userData=JSON.parse(sessionStorage.getItem('userData'))
-
+    axios.defaults.withCredentials=true;
     const navigate = useNavigate()
 
     const returnHome=()=>{

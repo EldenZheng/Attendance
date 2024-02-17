@@ -38,7 +38,7 @@ export default function Home(){
     ]);
 
     const userData=JSON.parse(sessionStorage.getItem('userData'))
-
+    axios.defaults.withCredentials=true;
     const navigate = useNavigate()
 
     useEffect(()=>{
