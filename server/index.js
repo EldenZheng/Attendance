@@ -9,7 +9,7 @@ const apprvModel = require('./models/Approval.model')
 const app= express()
 app.use(cors({
     origin:["https://attendance-red.vercel.app"],
-    methods:["GET", "POST", "PUT", "DELETE"],
+    methods:["POST", "GET", "PUT", "DELETE"],
     credentials:true
 }))
 app.use(express.json())
