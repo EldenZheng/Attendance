@@ -130,9 +130,10 @@ app.put("/EndShift", (req, res) =>{
     .catch(err=>res.json(err))
 })
 
-app.get("/checkShift/:email", async (req,res)=>{
-    const today = new Date().toISOString().split('T')[0];
-    const email = req.params.email;
+app.get("/checkShift", async (req,res)=>{
+    const {email,today} = req.body;
+    // const today = new Date().toISOString().split('T')[0];
+    // const email = req.params.email;
     try {
         const shift = await shiftModel.findOne({
             email: email,

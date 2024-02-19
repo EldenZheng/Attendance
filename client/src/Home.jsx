@@ -48,7 +48,12 @@ export default function Home(){
     },[])
 
     useEffect(()=>{
-        axios.get('https://attendance-api-rouge.vercel.app/checkShift/'+userData.email)
+        const today = new Date().toISOString().split('T')[0];
+        const shiftData = {
+            today: today,
+            email: userData.emai
+        }
+        axios.get('https://attendance-api-rouge.vercel.app/checkShift',shiftData)
         .then(result => {
             if(result.data.hasnt==true){
                 setShiftStatus(true)
