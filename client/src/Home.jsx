@@ -156,6 +156,11 @@ export default function Home(){
         setSelectedOption(event.target.value);
     };
 
+    const logOut = ()=>{
+        sessionStorage.removeItem('userData')
+        navigate('/')
+    }
+
     const goToAttendance=()=>{
         navigate('/Attendance')
     }
@@ -241,6 +246,8 @@ export default function Home(){
                     <hr />
                     <a onClick={goToOwnAttendance}>See Own Attendance List</a> <br />
                     <a onClick={goToAttendance}>Go To Attendance List</a>
+                    <hr />
+                    <button className="btn btn-danger" onClick={logOut}>Log Out</button>
                 </div>
             </div>
         </>
