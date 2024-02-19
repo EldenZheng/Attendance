@@ -84,9 +84,24 @@ export default function Home(){
         }, [setShiftStatus]);
 
     const startShift= () => {
+        const currentDateandTime = new Date();
+        const year = currentDateandTime.getFullYear();
+        const month = currentDateandTime.getMonth() + 1;
+        const day = currentDateandTime.getDate();
+    
+        const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+    
+        const hours = currentDateandTime.getHours();
+        const minutes = currentDateandTime.getMinutes();
+        const seconds = currentDateandTime.getSeconds();
+    
+        const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    
         const requestData = {
             email: info.email,
             onTime: onTime,
+            formattedDate: formattedDate,
+            formattedTime: formattedTime,
             ...(selectedOption && { selectedOption: selectedOption }),
             ...(isDlk && { selectedOption: isDlk})
         };
@@ -99,8 +114,23 @@ export default function Home(){
     }
 
     const endShift = () => {
+        const currentDateandTime = new Date();
+        const year = currentDateandTime.getFullYear();
+        const month = currentDateandTime.getMonth() + 1;
+        const day = currentDateandTime.getDate();
+
+        const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+
+        const hours = currentDateandTime.getHours();
+        const minutes = currentDateandTime.getMinutes();
+        const seconds = currentDateandTime.getSeconds();
+        
+        const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
         const shiftInfo = {
             email: info.email,
+            formattedDate: formattedDate,
+            formattedTime: formattedTime,
             duration: formatTime(duration)
         };
         axios.put('https://attendance-api-rouge.vercel.app/EndShift', shiftInfo)

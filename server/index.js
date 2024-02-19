@@ -61,20 +61,20 @@ app.post("/Login",(req, res) =>{
 })
 
 app.post("/StartShift",(req,res)=>{
-    const currentDateandTime = new Date();
-    const year = currentDateandTime.getFullYear();
-    const month = currentDateandTime.getMonth() + 1;
-    const day = currentDateandTime.getDate();
+    // const currentDateandTime = new Date();
+    // const year = currentDateandTime.getFullYear();
+    // const month = currentDateandTime.getMonth() + 1;
+    // const day = currentDateandTime.getDate();
 
-    const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+    // const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
 
-    const hours = currentDateandTime.getHours();
-    const minutes = currentDateandTime.getMinutes();
-    const seconds = currentDateandTime.getSeconds();
+    // const hours = currentDateandTime.getHours();
+    // const minutes = currentDateandTime.getMinutes();
+    // const seconds = currentDateandTime.getSeconds();
 
-    const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    // const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
-    const { email, onTime, selectedOption } = req.body;
+    const { email, onTime, selectedOption, formattedDate, formattedTime } = req.body;
     shiftModel.create({
         email:email,
         date: formattedDate,
@@ -101,19 +101,20 @@ app.post("/requestApprove",(req,res)=>{
 })
 
 app.put("/EndShift", (req, res) =>{
-    const currentDateandTime = new Date();
-    const year = currentDateandTime.getFullYear();
-    const month = currentDateandTime.getMonth() + 1;
-    const day = currentDateandTime.getDate();
+    // const currentDateandTime = new Date();
+    // const year = currentDateandTime.getFullYear();
+    // const month = currentDateandTime.getMonth() + 1;
+    // const day = currentDateandTime.getDate();
 
-    const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+    // const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
 
-    const hours = currentDateandTime.getHours();
-    const minutes = currentDateandTime.getMinutes();
-    const seconds = currentDateandTime.getSeconds();
-    const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    // const hours = currentDateandTime.getHours();
+    // const minutes = currentDateandTime.getMinutes();
+    // const seconds = currentDateandTime.getSeconds();
 
-    const { email, duration } = req.body;
+    // const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+    const { email, duration, formattedDate, formattedTime } = req.body;
 
     shiftModel.findOneAndUpdate({email:email,date:formattedDate} ,{
         duration: duration,
