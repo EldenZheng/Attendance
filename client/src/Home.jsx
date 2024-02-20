@@ -207,8 +207,8 @@ export default function Home(){
 
     return(
         <>
-            <div className="d-flex vh-100 vw-100 justify-content-center align-items-center bg-secondary-subtle">
-                <div className='w-50 bg-white rounded p-3'>
+            <div className="d-flex justify-content-center align-items-center bg-secondary-subtle">
+                <div className='w-70 bg-white rounded p-3'>
                     <h3>Welcome {info.email} !</h3>
                     <Button variant="primary" onClick={() => setModalShow(true)}>
                         <FontAwesomeIcon icon={faBusinessTime} /> Request DLK
