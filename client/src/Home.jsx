@@ -329,6 +329,7 @@ export default function Home(){
                                         placeholder="Enter email" 
                                         value={formData.email}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                                 <div className="form-group">
@@ -341,17 +342,20 @@ export default function Home(){
                                         placeholder="Enter password" 
                                         value={formData.password}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="role">Role:</label>
                                     <select className="form-control" id="role" name="role" value={formData.role} onChange={handleChange}>
+                                        <option value="">--select option--</option>
                                         <option value="HR">HR</option>
                                         <option value="satpam">Satpam</option>
                                         <option value="free">Free</option>
                                         <option value="employee">Employee</option>
                                         <option value="ccp">CCP</option>
                                         <option value="ccm">CCM</option>
+                                        required
                                     </select>
                                 </div>
                                 </form>
