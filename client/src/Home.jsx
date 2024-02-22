@@ -33,7 +33,7 @@ export default function Home(){
     const [shiftStatus,setShiftStatus]=useState(false)
     const [shiftStart,setShiftStart]=useState()
     const [duration, setDuration]=useState()
-    const [shiftComplete, setShiftComplete]=useState(true)
+    const [shiftComplete, setShiftComplete]=useState(false)
     const [showLoading, setShowLoading] = useState(true);
     const [isDlk, setIsDlk]=useState(false)
     const [calender, setCalender] = useState([
@@ -50,9 +50,7 @@ export default function Home(){
 
     useEffect(()=>{
         axios.get('https://attendance-api-rouge.vercel.app/getUser/'+userData.email)
-        .then(result => {setInfo(result.data)
-            console.log(result.data)
-        })
+        .then(result => setInfo(result.data))
         .catch(err=>console.log(err))
     },[])
 
@@ -305,7 +303,7 @@ export default function Home(){
                     }
                     <hr />
                     <a onClick={goToOwnAttendance}>See Own Attendance List</a> <br />
-                    <a onClick={goToAttendance}>Go To Attendance List</a>
+                    <a onClick={goToAttendance}>Go To Attendance List</a> <br />
                     {(info.role=="HR")&&(
                         <>
                             <a onClick={() => setUserModalShow(true)}>
