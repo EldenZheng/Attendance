@@ -26,7 +26,7 @@ export default function Home(){
     const [shiftStatus,setShiftStatus]=useState(false)
     const [shiftStart,setShiftStart]=useState()
     const [duration, setDuration]=useState()
-    const [shiftComplete, setShiftComplete]=useState(false)
+    const [shiftComplete, setShiftComplete]=useState(true)
     const [showLoading, setShowLoading] = useState(true);
     const [isDlk, setIsDlk]=useState(false)
     const [calender, setCalender] = useState([
