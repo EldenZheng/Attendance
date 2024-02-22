@@ -50,7 +50,9 @@ export default function Home(){
 
     useEffect(()=>{
         axios.get('https://attendance-api-rouge.vercel.app/getUser/'+userData.email)
-        .then(result => setInfo(result.data))
+        .then(result => {setInfo(result.data)
+            console.log(result.data)
+        })
         .catch(err=>console.log(err))
     },[])
 
