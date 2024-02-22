@@ -100,6 +100,17 @@ app.post("/requestApprove",(req,res)=>{
     .catch(err=>res.json(err))
 })
 
+app.post("/addUser",(req,res)=>{
+    const { email, password, role } = req.body;
+    userModel.create({
+        email:email,
+        password: password,
+        role: role,
+    })
+    .then(user=>res.json(user))
+    .catch(err=>res.json(err))
+})
+
 app.put("/EndShift", (req, res) =>{
     // const currentDateandTime = new Date();
     // const year = currentDateandTime.getFullYear();

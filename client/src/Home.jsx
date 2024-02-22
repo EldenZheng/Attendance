@@ -18,9 +18,16 @@ import Button from 'react-bootstrap/Button';
 export default function Home(){
     const [info,setInfo]=useState({
         email: '',
-        password: ''
+        password: '',
+        role:''
+    })
+    const[formData, setFormData]=useState({
+        email: '',
+        password: '',
+        role: ''
     })
     const [modalShow, setModalShow] = useState(false);
+    const [userModalShow, setUserModalShow] = useState(false);
     const [onTime,setOnTime]=useState(true)
     const [selectedOption, setSelectedOption] = useState();
     const [shiftStatus,setShiftStatus]=useState(false)
@@ -161,6 +168,14 @@ export default function Home(){
         .catch(err=>console.log(err))
     }
 
+    const addUser=()=>{
+        axios.post('https://attendance-api-rouge.vercel.app/addUser', formData)
+        .then(result=> {
+            setUserModalShow(false)
+        })
+        .catch(err=>console.log(err))
+    }
+
     useEffect(() => {
         let interval;
     
@@ -197,6 +212,14 @@ export default function Home(){
         navigate('/')
     }
 
+    const handleChange = (e) => {
+        const {name,value}=e.target;
+        setFormData((prevData)=>({
+            ...prevData,
+            [name]:value,
+        }))
+    }
+
     const goToAttendance=()=>{
         navigate('/Attendance')
     }
@@ -204,7 +227,6 @@ export default function Home(){
     const goToOwnAttendance=()=>{
         navigate('/SelfAttendance')
     }
-    
 
     return(
         <>
@@ -282,6 +304,61 @@ export default function Home(){
                     <hr />
                     <a onClick={goToOwnAttendance}>See Own Attendance List</a> <br />
                     <a onClick={goToAttendance}>Go To Attendance List</a>
+                    {(info.role=="HR")&&(
+                        <>
+                            <a onClick={() => setUserModalShow(true)}>
+                                Add User
+                            </a>
+                            <MyModal
+                                show={userModalShow}
+                                onHide={() => setUserModalShow(false)}
+                                title=" Add User"
+                                icon={faBusinessTime}
+                                onSearch={addUser}
+                                btnSign="Add User"
+                            >
+                                <h1>Input User Data</h1>
+                                <form>
+                                <div className="form-group">
+                                    <label htmlFor="email">Email:</label>
+                                    <input 
+                                        type="email" 
+                                        className="form-control" 
+                                        id="email" 
+                                        name="email"
+                                        placeholder="Enter email" 
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="password">Password:</label>
+                                    <input 
+                                        type="password" 
+                                        className="form-control" 
+                                        id="password" 
+                                        name="password"
+                                        placeholder="Enter password" 
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="role">Role:</label>
+                                    <select className="form-control" id="role" name="role" value={formData.role} onChange={handleChange}>
+                                        <option value="HR">HR</option>
+                                        <option value="satpam">Satpam</option>
+                                        <option value="free">Free</option>
+                                        <option value="employee">Employee</option>
+                                        <option value="ccp">CCP</option>
+                                        <option value="ccm">CCM</option>
+                                    </select>
+                                </div>
+                                </form>
+                                
+                            </MyModal>
+                        </>
+                    )}
                     <hr />
                     <button className="btn btn-danger" onClick={logOut}>Log Out</button>
                 </div>
