@@ -48,12 +48,13 @@ export default function Home(){
     },[])
 
     useEffect(()=>{
-        const today = new Date().toISOString().split('T')[0];
-        const shiftData = {
-            today: today,
-            email: userData.emai
-        }
-        axios.get('https://attendance-api-rouge.vercel.app/checkShift',shiftData)
+        // const today = new Date().toISOString().split('T')[0];
+        // const shiftData = {
+        //     today: today,
+        //     email: userData.emai
+        // }
+        // axios.get('https://attendance-api-rouge.vercel.app/checkShift',shiftData)
+        axios.get('https://attendance-api-rouge.vercel.app/checkShift/'+userData.email)
         .then(result => {
             if(result.data.hasnt==true){
                 setShiftStatus(true)
