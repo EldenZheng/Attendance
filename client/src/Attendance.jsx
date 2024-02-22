@@ -111,7 +111,7 @@ export default function AttendanceList(){
 
 
     return(
-        <div className="d-flex vh-100 vw-100 justify-content-center bg-secondary-subtle">
+        <div className="d-flex vw-100 justify-content-center bg-secondary-subtle min-vh-100">
             <div className='w-50 bg-white rounded p-3'>
                 <a onClick={returnHome}><FontAwesomeIcon icon={faChevronLeft} />Back</a> 
                 <h4>Attendance List{filteredData && (<> - <a onClick={exportData}>Export to Excel</a></>)}</h4>
